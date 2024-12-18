@@ -6,24 +6,20 @@ public class Servob
 {
     public final String servoName;
     private Servo servo;
-    private final double openPosition;
-    private final double closePosition;
-    private final double increaseAmount;
-    public Servob(String servoName, double openPosition, double closePosition, double increaseAmount){
-        this.increaseAmount = increaseAmount==0.0 ? 0.05 : increaseAmount;
+    private final double[] positions;
+    public Servob(String servoName, double[] positions){
         this.servoName = servoName;
-        this.openPosition = openPosition;
-        this.closePosition = closePosition;
+        this.positions = positions;
     }
 
     public void setupServo(){
-        close();
+
     }
     public void setServo(Servo servo){
         this.servo = servo;
     }
 
-    public void open(){
+/*    public void open(){
         servo.setPosition(openPosition);
     }
     public void close(){
@@ -36,9 +32,17 @@ public class Servob
     }
     public void decrease(){
         servo.setPosition(servo.getPosition()-increaseAmount);
+    }*/
+    public void set(int num){
+        servo.setPosition(positions[num]);
     }
-
+    public double get(int num){
+        return positions[num];
+    }
     public Servo getServo(){
         return servo;
+    }
+    public double getPos(){
+        return servo.getPosition();
     }
 }
