@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Servob
 {
     public final String servoName;
-    private Servo servo;
+    protected Servo servo;
     public Servob(String servoName){
         this.servoName = servoName;
 
@@ -22,5 +22,6 @@ public class Servob
     public double getPos(){
         return servo.getPosition();
     }
+
 
 }
