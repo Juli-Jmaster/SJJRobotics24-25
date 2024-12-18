@@ -1,21 +1,27 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.auto;
 
 public class CheckDriveStraight {
 
     public enum DIRECTION {LEFT, RIGHT, UNKOWN}
 
-//    public static final double TOLERANCE = 5.0;
+    public static final double TOLERANCE = 5.0;
 
     // Function to check if an angle is within 5 degrees of the target angle
-    public static boolean isWithinTolerance(int angle, int target, int tolerance) {
-        int lowerBound = (target - tolerance) ;
-        int upperBound = (target + tolerance) ;
+    public static boolean isWithinTolerance(double angle, double target) {
+        double lowerBound = target - TOLERANCE;
+        double upperBound = target + TOLERANCE;
 
-        if(lowerBound <= upperBound){
-            return lowerBound <= angle && angle <= upperBound;
+        // Handle wrap-around at -180 and 180 degrees
+        angle = correctionAngle(angle);
+        lowerBound = correctionAngle(lowerBound);
+        upperBound = correctionAngle(upperBound);
+
+        // Check if the angle falls within the tolerance range
+        if (lowerBound < upperBound) {
+            return angle >= lowerBound && angle <= upperBound;
         } else {
-            return lowerBound >= angle && angle >= upperBound;
-
+            // Handle cases where the range crosses the -180/180 boundary
+            return angle >= lowerBound || angle <= upperBound;
         }
     }
     public static DIRECTION turnToCorrectSide(double angle, double target){
@@ -24,7 +30,7 @@ public class CheckDriveStraight {
             target=-180;
         }
         if(target < angle){
-            return DIRECTION.LEFT;
+           return DIRECTION.LEFT;
         } else if (target > angle){
             return DIRECTION.RIGHT;
         }
@@ -32,7 +38,7 @@ public class CheckDriveStraight {
     }
 
     // Normalize angles to be within the range [-180, 180]
-    public static int correctionAngle(int angle) {
+     public static double correctionAngle(double angle) {
         while (angle > 180) angle -= 360;
         while (angle <= -180) angle += 360;
         return angle;
