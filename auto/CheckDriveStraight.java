@@ -1,44 +1,36 @@
-package org.firstinspires.ftc.teamcode.auto;
+package org.firstinspires.ftc.teamcode;
 
 public class CheckDriveStraight {
 
     public enum DIRECTION {LEFT, RIGHT, UNKOWN}
 
-    public static final double TOLERANCE = 5.0;
-
     // Function to check if an angle is within 5 degrees of the target angle
-    public static boolean isWithinTolerance(double angle, double target) {
-        double lowerBound = target - TOLERANCE;
-        double upperBound = target + TOLERANCE;
+    public static boolean isWithinTolerance(int angle, int target, int tolerance) {
+        int lowerBound = (target - tolerance) ;
+        int upperBound = (target + tolerance) ;
 
-        // Handle wrap-around at -180 and 180 degrees
-        angle = correctionAngle(angle);
-        lowerBound = correctionAngle(lowerBound);
-        upperBound = correctionAngle(upperBound);
-
-        // Check if the angle falls within the tolerance range
-        if (lowerBound < upperBound) {
-            return angle >= lowerBound && angle <= upperBound;
+        if(lowerBound <= upperBound){
+            return lowerBound <= angle && angle <= upperBound;
         } else {
-            // Handle cases where the range crosses the -180/180 boundary
-            return angle >= lowerBound || angle <= upperBound;
+            return lowerBound >= angle && angle >= upperBound;
+
         }
     }
-    public static DIRECTION turnToCorrectSide(double angle, double target){
+    public static boolean turnToCorrectSide(double angle, double target){
         if(target==180 && angle < 0) {
             System.out.println("here");
             target=-180;
         }
         if(target < angle){
-           return DIRECTION.LEFT;
+            return false;
         } else if (target > angle){
-            return DIRECTION.RIGHT;
+            return true;
         }
-        return DIRECTION.UNKOWN;
+        return true;
     }
 
     // Normalize angles to be within the range [-180, 180]
-     public static double correctionAngle(double angle) {
+    public static int correctionAngle(int angle) {
         while (angle > 180) angle -= 360;
         while (angle <= -180) angle += 360;
         return angle;
