@@ -4,8 +4,6 @@ public class CheckDriveStraight {
 
     public enum DIRECTION {LEFT, RIGHT, UNKOWN}
 
-//    public static final double TOLERANCE = 5.0;
-
     // Function to check if an angle is within 5 degrees of the target angle
     public static boolean isWithinTolerance(int angle, int target, int tolerance) {
         int lowerBound = (target - tolerance) ;
@@ -18,17 +16,17 @@ public class CheckDriveStraight {
 
         }
     }
-    public static DIRECTION turnToCorrectSide(double angle, double target){
+    public static boolean turnToCorrectSide(double angle, double target){
         if(target==180 && angle < 0) {
             System.out.println("here");
             target=-180;
         }
         if(target < angle){
-            return DIRECTION.LEFT;
+            return false;
         } else if (target > angle){
-            return DIRECTION.RIGHT;
+            return true;
         }
-        return DIRECTION.UNKOWN;
+        return true;
     }
 
     // Normalize angles to be within the range [-180, 180]
