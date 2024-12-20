@@ -47,6 +47,10 @@ public class Drive extends LinearOpMode implements BasicRobot {
     private final double speedDivider = 2;
     private final double maxPower = 0.6;
 
+
+    private int SLIDEOUT = 0;
+    private int SLIDEIN = 1;
+
     private enum intakeClawPosition{
 
         open(0.0),
@@ -92,7 +96,7 @@ public class Drive extends LinearOpMode implements BasicRobot {
 
     private double RangeLimit(double value){
         double denominator = 0;
-        
+
         if(Math.abs(y) > 0.2){
             denominator++;
         }
@@ -123,13 +127,14 @@ public class Drive extends LinearOpMode implements BasicRobot {
         outtakeAngle.setServo(hardwareMap.get(Servo.class, "outtakeAngle"));
         intakeAngle.setServo(hardwareMap.get(Servo.class, "intakeAngle"));
 
-        Servo outtakeClaw = hardwareMap.get(Servo.class, "outtakeClaw");
+        intakeSlide1.setServo(hardwareMap.get(Servo.class, intakeSlide1.servoName));
+        intakeSlide2.setServo(hardwareMap.get(Servo.class, intakeSlide2.servoName));
 
-//        Servo intakeAngle = hardwareMap.get(Servo.class, "intakeAngle");
+        Servo outtakeClaw = hardwareMap.get(Servo.class, "outtakeClaw");
         Servo intakeClaw = hardwareMap.get(Servo.class, "intakeClaw");
 
-        Servo intakeSlide1 = hardwareMap.get(Servo.class, "intakeSlide1");
-        Servo intakeSlide2 = hardwareMap.get(Servo.class, "intakeSlide2");
+//        Servo intakeSlide1 = hardwareMap.get(Servo.class, "intakeSlide1");
+//        Servo intakeSlide2 = hardwareMap.get(Servo.class, "intakeSlide2");
 
         DcMotor elavator1 = hardwareMap.get(DcMotor.class, "elavator1");
         DcMotor elavator2 = hardwareMap.get(DcMotor.class, "elavator2");
@@ -142,6 +147,8 @@ public class Drive extends LinearOpMode implements BasicRobot {
         outtakeAngle.set(TRANSFEROUTTAKE);
         intakeClaw.setPosition(intakeClawPosition.open.position);
         outtakeClaw.setPosition(outtakeClawPosition.close.position);
+        intakeSlide1.set(0);
+        intakeSlide2.set(1);
 
         IMU imu = hardwareMap.get(IMU.class, "imu");
 
@@ -183,8 +190,8 @@ public class Drive extends LinearOpMode implements BasicRobot {
             } else {
                 drive();
             }
-            telemetry.addData("Servo Position in", (double) intakeAngle.getPos());
-            telemetry.addData("Servo Position out", (double) outtakeAngle.getServo().getPosition());
+            telemetry.addData("Servo Position 2", (double) intakeSlide2.getPos());
+            telemetry.addData("Servo Position 1", (double) intakeSlide1.getPos());
             telemetry.addData("preref", gamepad1.dpad_left);
             //pressed
             telemetry.addData("bpressed", bpressed);
@@ -229,8 +236,8 @@ public class Drive extends LinearOpMode implements BasicRobot {
                 intakeAngle.set(TRANSFERINTAKE);
                 waitMe(0.3, runtime);
                 if(abort){break;}
-                intakeSlide1.setPosition(0);
-                intakeSlide2.setPosition(1);
+                intakeSlide1.set(0.0);
+                intakeSlide2.set(1.0);
                 waitMe(0.6, runtime);
                 if(abort){break;}
                 outtakeClaw.setPosition(outtakeClawPosition.close.position);
@@ -241,13 +248,16 @@ public class Drive extends LinearOpMode implements BasicRobot {
 
             }
             if (gamepad2.right_trigger > 0.2) {
-                intakeSlide1.setPosition(0.35/*-0.15*/);
-                intakeSlide2.setPosition(0.65/*+0.15*/);
+//                intakeSlide1.setPosition(0.35/*-0.15*/);
+//                intakeSlide2.setPosition(0.65/*+0.15*/);
+
+                intakeSlide1.decrease();
+                intakeSlide2.increase();
             }
 
             if (gamepad2.left_trigger > 0.2) {
-                intakeSlide1.setPosition(0);
-                intakeSlide2.setPosition(1);
+                intakeSlide1.increase();
+                intakeSlide2.decrease();
             }
 
             if (gamepad2.left_stick_y < -0.2) {

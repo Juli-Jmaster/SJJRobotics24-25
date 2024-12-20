@@ -22,14 +22,18 @@ public class AjustableServo extends Servob
         servo.setPosition(startPos);
     }
 
-    public double checkAdjust(double value){
-        if(value < EndAt){
-            return EndAt;
+    public double checkAdjust(double value) {
+        // Check if the value is within the range
+        if (value >= StartFrom && value <= EndAt) {
+            return value;
+        } else {
+            // Return the closest boundary (startFrom or endAt)
+            if (Math.abs(value - StartFrom) < Math.abs(value - EndAt)) {
+                return StartFrom;
+            } else {
+                return EndAt;
+            }
         }
-        if(value > StartFrom){
-            return StartFrom;
-        }
-        return  value;
     }
     public void increase(){
         servo.setPosition(checkAdjust(servo.getPosition()+increaseAmount));
@@ -38,4 +42,7 @@ public class AjustableServo extends Servob
         servo.setPosition(checkAdjust(servo.getPosition()-increaseAmount));
     }
 
+    public void set(double value){
+        servo.setPosition(value);
+    }
 }
