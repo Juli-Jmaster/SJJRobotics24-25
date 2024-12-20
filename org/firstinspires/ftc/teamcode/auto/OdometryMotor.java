@@ -14,7 +14,7 @@ public class OdometryMotor extends MotorEx {
         TICKPERREV
     }
 
-    public static double mmToInches = 0.03937008;
+    public static double mmToInches = 0.0393701;
     private double tolerance = 0.5;
 
 
@@ -22,16 +22,16 @@ public class OdometryMotor extends MotorEx {
 
     public OdometryMotor(String name, WHEELTYPE wheeltype, int wheelDiameter, TYPE type, int tick){
         super(name);
-        if(wheeltype==WHEELTYPE.MM || type==TYPE.TICKPERREV){
+        if(wheeltype==WHEELTYPE.MM && type==TYPE.TICKPERREV){
             inchesPerCount = Math.PI * wheelDiameter*mmToInches / tick;
         }
-        if(wheeltype==WHEELTYPE.MM || type==TYPE.PPR){
+        if(wheeltype==WHEELTYPE.MM && type==TYPE.PPR){
             inchesPerCount = Math.PI * wheelDiameter*mmToInches / (tick * 4);
         }
-        if(wheeltype==WHEELTYPE.INCHES || type==TYPE.TICKPERREV){
+        if(wheeltype==WHEELTYPE.INCHES && type==TYPE.TICKPERREV){
             inchesPerCount = Math.PI * wheelDiameter / tick;
         }
-        if(wheeltype==WHEELTYPE.INCHES || type==TYPE.PPR){
+        if(wheeltype==WHEELTYPE.INCHES && type==TYPE.PPR){
             inchesPerCount = Math.PI * wheelDiameter / (tick * 4);
         }
     }

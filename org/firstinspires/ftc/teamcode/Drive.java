@@ -54,7 +54,7 @@ public class Drive extends LinearOpMode implements BasicRobot {
     private enum intakeClawPosition{
 
         open(0.0),
-        close(0.110);
+        close(0.05);
 
         private double position;
 
@@ -66,7 +66,7 @@ public class Drive extends LinearOpMode implements BasicRobot {
     private enum outtakeClawPosition{
 
         open(0.036),
-        close(0.28);
+        close(0.3);
 
         private double position;
 
