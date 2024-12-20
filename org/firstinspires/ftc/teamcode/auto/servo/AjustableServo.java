@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.auto.servo;
 
 import com.qualcomm.robotcore.hardware.Servo;
+import org.firstinspires.ftc.teamcode.auto.servo.Servob;
+
 
 public class AjustableServo extends Servob
 {
