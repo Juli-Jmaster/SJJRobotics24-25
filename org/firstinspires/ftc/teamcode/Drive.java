@@ -19,11 +19,13 @@ import org.firstinspires.ftc.teamcode.auto.BasicRobot;
 @TeleOp
 public class Drive extends LinearOpMode implements BasicRobot {
 
+    //motors for drive
     private DcMotor frontrightDrive = null;
     private DcMotor backrightDrive = null;
     private DcMotor frontleftDrive = null;
     private DcMotor backleftDrive = null;
 
+    // variables for movement of robot;
     private float y ;
     private float x ;
     private float rx;
@@ -35,50 +37,7 @@ public class Drive extends LinearOpMode implements BasicRobot {
     private boolean gpdpressed = true;
     private boolean abort = false;
 
-    private int TRANSFERINTAKE = 0;
-    private int RETRIEV = 1;
-    private double MOTION = 0.5;
-    //"PLACE" EFFECTS THE FLIP OUT, "TRANSFEROUTTAKE" EFFECTS THE TRANSFER POSITION
-    private int PLACEOUTTAKE = 1;
-    private int TRANSFEROUTTAKE = 0;
-
-
-    private final double DEADZONE = .1;
-    private final double speedDivider = 2;
     private final double maxPower = 0.6;
-
-
-    private int SLIDEOUT = 0;
-    private int SLIDEIN = 1;
-
-    private enum intakeClawPosition{
-
-        open(0.0),
-        close(0.05);
-
-        private double position;
-
-        intakeClawPosition(double v) {
-            this.position = v;
-        }
-    }
-
-    private enum outtakeClawPosition{
-
-        open(0.036),
-        close(0.3);
-
-        private double position;
-
-        outtakeClawPosition(double v) {
-            this.position = v;
-        }
-    }
-
-
-
-
-
 
     public void drive(){//DcMotor backleftDrive, DcMotor backrightDrive, DcMotor frontleftDrive, DcMotor frontrightDrive) {
         if((rx<0)){
@@ -123,35 +82,36 @@ public class Drive extends LinearOpMode implements BasicRobot {
         backrightDrive = hardwareMap.get(DcMotor.class, "backright");
         frontleftDrive = hardwareMap.get(DcMotor.class, "frontleft");
         backleftDrive = hardwareMap.get(DcMotor.class, "backleft");
-
-        outtakeAngle.setServo(hardwareMap.get(Servo.class, "outtakeAngle"));
-        intakeAngle.setServo(hardwareMap.get(Servo.class, "intakeAngle"));
-
-        intakeSlide1.setServo(hardwareMap.get(Servo.class, intakeSlide1.servoName));
-        intakeSlide2.setServo(hardwareMap.get(Servo.class, intakeSlide2.servoName));
-
-        Servo outtakeClaw = hardwareMap.get(Servo.class, "outtakeClaw");
-        Servo intakeClaw = hardwareMap.get(Servo.class, "intakeClaw");
-
-//        Servo intakeSlide1 = hardwareMap.get(Servo.class, "intakeSlide1");
-//        Servo intakeSlide2 = hardwareMap.get(Servo.class, "intakeSlide2");
-
+        //load other motors
         DcMotor elavator1 = hardwareMap.get(DcMotor.class, "elavator1");
         DcMotor elavator2 = hardwareMap.get(DcMotor.class, "elavator2");
+
+        //load servos
+        outtakeAngle.setServo(hardwareMap.get(Servo.class, outtakeAngle.servoName));
+        intakeAngle.setServo(hardwareMap.get(Servo.class, intakeAngle.servoName));
+        intakeSlide1.setServo(hardwareMap.get(Servo.class, intakeSlide1.servoName));
+        intakeSlide2.setServo(hardwareMap.get(Servo.class, intakeSlide2.servoName));
+        outtakeClaw.setServo(hardwareMap.get(Servo.class, outtakeClaw.servoName));
+        intakeClaw.setServo(hardwareMap.get(Servo.class, intakeClaw.servoName));
+//        Servo outtakeClaw = hardwareMap.get(Servo.class, "outtakeClaw");
+//        Servo intakeClaw = hardwareMap.get(Servo.class, "intakeClaw");
+
 
         //reverse correct motor so power of 1 makes robot go forward
         frontrightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //set start position for teleOp
+        intakeSlide1.startServo();
+        intakeSlide2.startServo();
         intakeAngle.set(TRANSFERINTAKE);
         outtakeAngle.set(TRANSFEROUTTAKE);
-        intakeClaw.setPosition(intakeClawPosition.open.position);
-        outtakeClaw.setPosition(outtakeClawPosition.close.position);
-        intakeSlide1.set(0);
-        intakeSlide2.set(1);
+        intakeClaw.set(OPEN);//intakeClawPosition.open.position);
+        outtakeClaw.set(CLOSE);//outtakeClawPosition.close.position);
+        claws=false;
 
+
+        //imu setup
         IMU imu = hardwareMap.get(IMU.class, "imu");
-
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.UP,
                 RevHubOrientationOnRobot.UsbFacingDirection.RIGHT));
@@ -200,14 +160,17 @@ public class Drive extends LinearOpMode implements BasicRobot {
 
             if (gamepad2.a && apressed == true) {
                 if (!claws) {
-                    intakeClaw.setPosition(intakeClawPosition.close.position);
+                    intakeClaw.set(CLOSE);//intakeClawPosition.close.position);
                     waitMe(0.4, runtime);
-                    outtakeClaw.setPosition(outtakeClawPosition.open.position);
+                    outtakeClaw.set(OPEN);
+//                    outtakeClaw.setPosition(outtakeClawPosition.open.position);
                     claws = true;
                 } else if (claws) {
-                    outtakeClaw.setPosition(outtakeClawPosition.close.position);
+                    outtakeClaw.set(CLOSE);
+//                    outtakeClaw.setPosition(outtakeClawPosition.close.position);
                     waitMe(0.4, runtime);
-                    intakeClaw.setPosition(intakeClawPosition.open.position);
+                    intakeClaw.set(OPEN);
+//                    intakeClaw.setPosition(intakeClawPosition.open.position);
                     claws = false;
                 }
                 apressed = false;
@@ -229,8 +192,9 @@ public class Drive extends LinearOpMode implements BasicRobot {
                 ypressed = false;
             }
             if (gamepad2.dpad_down && gpdpressed == true) {
-                outtakeClaw.setPosition(outtakeClawPosition.open.position);
-                intakeClaw.setPosition(intakeClawPosition.close.position);
+                outtakeClaw.set(OPEN);//outtakeClawPosition.open.position);
+                intakeClaw.set(CLOSE);//intakeClawPosition.close.position);
+                claws=true;
                 waitMe(0.3, runtime);
                 if(abort){break;}
                 intakeAngle.set(TRANSFERINTAKE);
@@ -240,10 +204,10 @@ public class Drive extends LinearOpMode implements BasicRobot {
                 intakeSlide2.set(1.0);
                 waitMe(0.6, runtime);
                 if(abort){break;}
-                outtakeClaw.setPosition(outtakeClawPosition.close.position);
+                outtakeClaw.set(CLOSE);//outtakeClawPosition.close.position);
                 waitMe(0.3, runtime);
                 if(abort){break;}
-                intakeClaw.setPosition(intakeClawPosition.open.position);
+                intakeClaw.set(OPEN);//intakeClawPosition.open.position);
                 claws=false;
 
             }
