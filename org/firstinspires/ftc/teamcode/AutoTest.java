@@ -10,18 +10,17 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.auto.InterfaceErrorIMU;
 import org.firstinspires.ftc.teamcode.auto.OdometryMotor;
 import org.firstinspires.ftc.teamcode.auto.UpdatePowerTypes;
 
-import static org.firstinspires.ftc.teamcode.CheckDriveStraight.isWithinTolerance;
-import static org.firstinspires.ftc.teamcode.CheckDriveStraight.turnToCorrectSide;
-
+import static org.firstinspires.ftc.teamcode.auto.CheckDriveStraight.passedTarget;
 
 @Autonomous
 public class AutoTest extends LinearOpMode {
 
+    private InterfaceErrorIMU imu = new InterfaceErrorIMU("imu");
     private double rotationLeft = 0;
-    private IMU imu;
     private DcMotor frontrightDrive;
     private DcMotor backrightDrive;
     private DcMotor frontleftDrive;
@@ -62,14 +61,12 @@ public class AutoTest extends LinearOpMode {
         straight.setMotor(hardwareMap.get(DcMotorEx.class, straight.motorname));
         straight.getMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        imu = hardwareMap.get(IMU.class,"imu");
 
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.UP,
                 RevHubOrientationOnRobot.UsbFacingDirection.RIGHT));
-        imu.initialize(parameters);
+        imu.getImu().initialize(parameters);
 
-//        final double start = imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle;
         imu.resetYaw();
         //send telemetry data and wait for start
         telemetry.update();
@@ -86,14 +83,14 @@ public class AutoTest extends LinearOpMode {
         straight.getMotor().setTargetPosition(position);
         straight.getMotor().setMode(DcMotor.RunMode.RUN_TO_POSITION);
         int CUR = straight.getMotor().getCurrentPosition();
-        while(!hadssedThes(straight.getMotor().getCurrentPosition(), straight.getMotor().getTargetPosition())){
-            facing(target);
-            frontrightDrive.setPower(-UpdatePowerTypes.startEndUpdatePower(straight.getMotor(), CUR)-getRotationLeft(target));
-            frontleftDrive.setPower(-UpdatePowerTypes.startEndUpdatePower(straight.getMotor(), CUR)+getRotationLeft(target));
-            backleftDrive.setPower(-UpdatePowerTypes.startEndUpdatePower(straight.getMotor(), CUR)+getRotationLeft(target));
-            backrightDrive.setPower(-UpdatePowerTypes.startEndUpdatePower(straight.getMotor(), CUR)-getRotationLeft(target));
+        while(!passedTarget(straight.getMotor().getCurrentPosition(), straight.getMotor().getTargetPosition())){
+            imu.notFacing(target);
+            frontrightDrive.setPower(-UpdatePowerTypes.startEndUpdatePower(straight.getMotor(), CUR)-imu.getRotationLeftPower(target));
+            frontleftDrive.setPower(-UpdatePowerTypes.startEndUpdatePower(straight.getMotor(), CUR)+imu.getRotationLeftPower(target));
+            backleftDrive.setPower(-UpdatePowerTypes.startEndUpdatePower(straight.getMotor(), CUR)+imu.getRotationLeftPower(target));
+            backrightDrive.setPower(-UpdatePowerTypes.startEndUpdatePower(straight.getMotor(), CUR)-imu.getRotationLeftPower(target));
         }
-        while(facing(target)){
+        while(imu.notFacing(target)){
             rotateToTarget(target);
         }
         frontleftDrive.setPower(0.0);
@@ -138,53 +135,15 @@ public class AutoTest extends LinearOpMode {
         // }
     }
 
-    private void wait(double sec, ElapsedTime runtime){
-        runtime.reset();
-        while(runtime.seconds() < sec){
-        }
-    }
-
-    private boolean hadssedThes(int input, int target){
-        if(target > 0){
-            return input >= target;
-        } else {
-            return input <= target;
-        }
-    }
-
-    public boolean facing(int target){
-        rotationLeft=0;
-        boolean correctDriction=false;
-        double power = 0.075;
-        int cur = (int)imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)+180;
-        if (!isWithinTolerance(cur, target, 3)){
-            rotationLeft+=power;
-            correctDriction=true;
-        }
-        if (!isWithinTolerance(cur, target, 20)){
-            rotationLeft+=power;
-        }
-        if (!isWithinTolerance(cur, target, 40)){
-            rotationLeft+=power;
-        }
-        if (!isWithinTolerance(cur, target, 80)){
-            rotationLeft+=power;
-        }
-        return correctDriction;
-    }
-
-    public double getRotationLeft(int target) {
-        return rotationLeft*(turnToCorrectSide(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)+180, target) ? 1 : -1);
-    }
     public void rotateToTarget(int target) {
-        double rl = getRotationLeft(target);
+        double rl = imu.getRotationLeftPower(target);
         backleftDrive.setPower(rl); //backR
         backrightDrive.setPower(-rl); //frontL
         frontleftDrive.setPower(rl);  //frontR
         frontrightDrive.setPower(-rl);
     }
 
-    public double nl(double v){
+    public double naturalLog(double v){
         return Math.log(v) / Math.log(Math.E);
     }
 
@@ -192,7 +151,7 @@ public class AutoTest extends LinearOpMode {
         if(v > 12){
             return equation2(v);
         }
-        return 273.6772+231.96*nl(v);
+        return 273.6772+231.96* naturalLog(v);
     }
     public double equation2(double v){
         return 5.516*v + 817.6;
