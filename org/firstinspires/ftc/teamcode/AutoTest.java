@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.auto.DriveMainAuto;
 import org.firstinspires.ftc.teamcode.auto.InterfaceErrorIMU;
 import org.firstinspires.ftc.teamcode.auto.OdometryMotor;
 import org.firstinspires.ftc.teamcode.auto.UpdatePowerTypes;
@@ -17,57 +18,20 @@ import org.firstinspires.ftc.teamcode.auto.UpdatePowerTypes;
 import static org.firstinspires.ftc.teamcode.auto.CheckDriveStraight.passedTarget;
 
 @Autonomous
-public class AutoTest extends LinearOpMode {
+public class AutoTest extends LinearOpMode implements DriveMainAuto {
 
-    private InterfaceErrorIMU imu = new InterfaceErrorIMU("imu");
-    private double rotationLeft = 0;
-    private DcMotor frontrightDrive;
-    private DcMotor backrightDrive;
-    private DcMotor frontleftDrive;
-    private DcMotor backleftDrive;
 
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry.addData("Status", "Initialized");
         ElapsedTime runtime = new ElapsedTime();
-        //define robots attachments to work
-        frontrightDrive = hardwareMap.get(DcMotor.class, "frontright");
-        backrightDrive = hardwareMap.get(DcMotor.class, "backright");
-        frontleftDrive = hardwareMap.get(DcMotor.class, "frontleft");
-        backleftDrive = hardwareMap.get(DcMotor.class, "backleft");
 
-        frontleftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontrightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backrightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backleftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        OdometryMotor straight = new OdometryMotor("straight", OdometryMotor.WHEELTYPE.MM, 48, OdometryMotor.TYPE.TICKPERREV, 2000 );
-
-        Servo outtakeAngle = hardwareMap.get(Servo.class, "outtakeAngle");
-        Servo outtakeClaw = hardwareMap.get(Servo.class, "outtakeClaw");
-
-        Servo intakeAngle = hardwareMap.get(Servo.class, "intakeAngle");
-        Servo intakeClaw = hardwareMap.get(Servo.class, "intakeClaw");
-
-        Servo intakeSlide1 = hardwareMap.get(Servo.class, "intakeSlide1");
-        Servo intakeSlide2 = hardwareMap.get(Servo.class, "intakeSlide2");
-
-        DcMotor elavator1 = hardwareMap.get(DcMotor.class, "elavator1");
-        DcMotor elavator2 = hardwareMap.get(DcMotor.class, "elavator2");
-
-        //reverse correct motor so power of 1 makes robot go forward
-        frontrightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        straight.setMotor(hardwareMap.get(DcMotorEx.class, straight.motorname));
-        straight.getMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-
-        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+        //load motors things
+        loadMotors(hardwareMap, new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.UP,
                 RevHubOrientationOnRobot.UsbFacingDirection.RIGHT));
-        imu.getImu().initialize(parameters);
 
-        imu.resetYaw();
+        setModeAllDrive(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         //send telemetry data and wait for start
         telemetry.update();
         waitForStart();
@@ -78,25 +42,26 @@ public class AutoTest extends LinearOpMode {
         double pos ;
 
         int target = 180;
-        double ticks = 24 / straight.inchesPerCount;
-        int position = straight.getMotor().getCurrentPosition() + (int)ticks - (int)equation((int)ticks);// -((int)((1.282*ticks)+336.6)-(int)ticks);
-        straight.getMotor().setTargetPosition(position);
-        straight.getMotor().setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        straight.move(6);
         int CUR = straight.getMotor().getCurrentPosition();
         while(!passedTarget(straight.getMotor().getCurrentPosition(), straight.getMotor().getTargetPosition())){
             imu.notFacing(target);
-            frontrightDrive.setPower(-UpdatePowerTypes.startEndUpdatePower(straight.getMotor(), CUR)-imu.getRotationLeftPower(target));
-            frontleftDrive.setPower(-UpdatePowerTypes.startEndUpdatePower(straight.getMotor(), CUR)+imu.getRotationLeftPower(target));
-            backleftDrive.setPower(-UpdatePowerTypes.startEndUpdatePower(straight.getMotor(), CUR)+imu.getRotationLeftPower(target));
-            backrightDrive.setPower(-UpdatePowerTypes.startEndUpdatePower(straight.getMotor(), CUR)-imu.getRotationLeftPower(target));
+            frontRightDrive.setPower(-UpdatePowerTypes.decreaseAtEnd(straight.getMotor(), CUR)-imu.getRotationLeftPower(target));
+            frontLeftDrive.setPower(-UpdatePowerTypes.decreaseAtEnd(straight.getMotor(), CUR)+imu.getRotationLeftPower(target));
+            backLeftDrive.setPower(-UpdatePowerTypes.decreaseAtEnd(straight.getMotor(), CUR)+imu.getRotationLeftPower(target));
+            backRightDrive.setPower(-UpdatePowerTypes.decreaseAtEnd(straight.getMotor(), CUR)-imu.getRotationLeftPower(target));
+        }
+        while(passedTarget(straight.getMotor().getCurrentPosition(), straight.getMotor().getTargetPosition())){
+            imu.notFacing(target);
+            frontRightDrive.setPower(0.1-imu.getRotationLeftPower(target));
+            frontLeftDrive.setPower(0.1+imu.getRotationLeftPower(target));
+            backLeftDrive.setPower(0.1+imu.getRotationLeftPower(target));
+            backRightDrive.setPower(0.1-imu.getRotationLeftPower(target));
         }
         while(imu.notFacing(target)){
             rotateToTarget(target);
         }
-        frontleftDrive.setPower(0.0);
-        frontrightDrive.setPower(0.0);
-        backleftDrive.setPower(0.0);
-        backrightDrive.setPower(0.0);
+        stopMotors();
         while(opModeIsActive()){
             telemetry.addData("tar", straight.getMotor().getTargetPosition());
             telemetry.addData("cur", straight.getMotor().getCurrentPosition());
@@ -137,10 +102,10 @@ public class AutoTest extends LinearOpMode {
 
     public void rotateToTarget(int target) {
         double rl = imu.getRotationLeftPower(target);
-        backleftDrive.setPower(rl); //backR
-        backrightDrive.setPower(-rl); //frontL
-        frontleftDrive.setPower(rl);  //frontR
-        frontrightDrive.setPower(-rl);
+        backLeftDrive.setPower(rl); //backR
+        backRightDrive.setPower(-rl); //frontL
+        frontLeftDrive.setPower(rl);  //frontR
+        frontRightDrive.setPower(-rl);
     }
 
     public double naturalLog(double v){

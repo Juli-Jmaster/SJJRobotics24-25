@@ -32,6 +32,12 @@ public interface DriveMainAuto extends MotorUtils {
         backLeftDrive.setMotor(hardwareMap.get(DcMotor.class, backLeftDrive.motorname));
         backLeftDrive.setupMotor();
 
+        //set zero power behavior to brake instead of doing nothing
+        frontRightDrive.getMotor().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontLeftDrive.getMotor().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRightDrive.getMotor().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeftDrive.getMotor().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         //load odometer Motors
         straight.setMotor(hardwareMap.get(DcMotorEx.class, straight.motorname));
         sideways.setMotor(hardwareMap.get(DcMotorEx.class, sideways.motorname));

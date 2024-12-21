@@ -5,8 +5,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 // all functions for adjusting power as the robot moves with ticks
 public class UpdatePowerTypes{
-    private static final double minPower = 0.15;
-    private static final double maxPower = 0.8;
+    private static final double minPower = 0;
+    private static final double maxPower = 0.4;
 
     public static void basicUpdatePower(DcMotor motor){basicUpdatePower(motor, 100, 10);}
     public static void basicUpdatePower(DcMotor motor, int startDistance, int endDistance){basicUpdatePower(motor, minPower, maxPower,startDistance, endDistance);}
@@ -52,6 +52,24 @@ public class UpdatePowerTypes{
         return 0;
     }
 
+    public static double decreaseAtEnd(DcMotorEx motor, int startPostionSave, int decelDistance, int offsetOfEnd){
+        offsetOfEnd--;
+
+        //if target is smaller
+        //than going backwards
+        if (motor.getTargetPosition()<startPostionSave){
+            return endingDamp(motor.getCurrentPosition()-motor.getTargetPosition(), decelDistance+offsetOfEnd, offsetOfEnd);
+        }
+        //if target is bigger
+        //than going forward
+        if (motor.getTargetPosition()>startPostionSave){
+            return endingDamp(motor.getTargetPosition()-motor.getCurrentPosition(),  decelDistance+offsetOfEnd, offsetOfEnd);
+        }
+        return 0;
+    }
+    public static double decreaseAtEnd(DcMotorEx motor, int startPostionSave) {
+        return decreaseAtEnd(motor, startPostionSave, 300, 80);
+    }
 
 
     private static double nextPart(double cur, int startPostion, int endPosition, int startPos2, int endPos2) {

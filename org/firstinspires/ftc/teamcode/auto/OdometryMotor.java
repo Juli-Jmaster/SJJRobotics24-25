@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.auto;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 // a class for handling odometry motor and it calculations
 // it extends the MotorEx class because a odometry motor is not powered and so it use the motor functions in that calss
 public class OdometryMotor extends MotorEx {
@@ -41,5 +43,19 @@ public class OdometryMotor extends MotorEx {
         double ticks = inches / inchesPerCount;
         int position = motor.getCurrentPosition() + (int)ticks;
         motor.setTargetPosition(position);
+    }
+
+    public double naturalLog(double v){
+        return Math.log(v) / Math.log(Math.E);
+    }
+
+    public double equation(double v){
+        if(v > 12){
+            return equation2(v);
+        }
+        return 273.6772+231.96* naturalLog(v);
+    }
+    public double equation2(double v){
+        return 5.516*v + 817.6;
     }
 }

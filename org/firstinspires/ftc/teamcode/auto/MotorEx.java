@@ -15,8 +15,8 @@ public class MotorEx {
         this.motor = motor;
     }
 
-    public void move(int ticks) {
-        int position = motor.getCurrentPosition() + ticks;
+    public void move(double ticks) {
+        int position = (int) (motor.getCurrentPosition() + ticks);
         motor.setTargetPosition(position);
     }
     public void stopMotor() {
