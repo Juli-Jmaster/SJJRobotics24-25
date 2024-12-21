@@ -1,18 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.robot.Robot;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.auto.BasicRobot;
 
 
@@ -103,8 +98,8 @@ public class Drive extends LinearOpMode implements BasicRobot {
         //set start position for teleOp
         intakeSlide1.startServo();
         intakeSlide2.startServo();
-        intakeAngle.set(TRANSFERINTAKE);
-        outtakeAngle.set(TRANSFEROUTTAKE);
+        intakeAngle.set(TRANSFER);
+        outtakeAngle.set(TRANSFER);
         intakeClaw.set(OPEN);//intakeClawPosition.open.position);
         outtakeClaw.set(CLOSE);//outtakeClawPosition.close.position);
         claws=false;
@@ -176,17 +171,17 @@ public class Drive extends LinearOpMode implements BasicRobot {
                 apressed = false;
             }
             if (gamepad2.b && bpressed == true) {
-                if (intakeAngle.get(RETRIEV) + 0.1 > intakeAngle.getPos() && intakeAngle.get(RETRIEV) - 0.1 < intakeAngle.getPos()) {
-                    intakeAngle.set(TRANSFERINTAKE);
-                } else if (intakeAngle.get(TRANSFERINTAKE) + 0.1 > intakeAngle.getPos() && intakeAngle.get(TRANSFERINTAKE) - 0.1 < intakeAngle.getPos()) {
-                    intakeAngle.set(RETRIEV);
+                if (intakeAngle.get(GRAB) + 0.1 > intakeAngle.getPos() && intakeAngle.get(GRAB) - 0.1 < intakeAngle.getPos()) {
+                    intakeAngle.set(TRANSFER);
+                } else if (intakeAngle.get(TRANSFER) + 0.1 > intakeAngle.getPos() && intakeAngle.get(TRANSFER) - 0.1 < intakeAngle.getPos()) {
+                    intakeAngle.set(GRAB);
                 }
                 bpressed = false;
             }
             if (gamepad2.y && ypressed == true) {
-                if (outtakeAngle.get(PLACEOUTTAKE) + 0.05 > outtakeAngle.getPos() && outtakeAngle.get(PLACEOUTTAKE) - 0.05 < outtakeAngle.getPos()) {
+                if (outtakeAngle.get(PLACE) + 0.05 > outtakeAngle.getPos() && outtakeAngle.get(PLACE) - 0.05 < outtakeAngle.getPos()) {
                     outtakeAngle.set(0);
-                } else if (outtakeAngle.get(TRANSFEROUTTAKE) + 0.05 > outtakeAngle.getPos() && outtakeAngle.get(TRANSFEROUTTAKE) - 0.05 < outtakeAngle.getPos()) {
+                } else if (outtakeAngle.get(TRANSFER) + 0.05 > outtakeAngle.getPos() && outtakeAngle.get(TRANSFER) - 0.05 < outtakeAngle.getPos()) {
                     outtakeAngle.set(1);
                 }
                 ypressed = false;
@@ -197,7 +192,7 @@ public class Drive extends LinearOpMode implements BasicRobot {
                 claws=true;
                 waitMe(0.3, runtime);
                 if(abort){break;}
-                intakeAngle.set(TRANSFERINTAKE);
+                intakeAngle.set(TRANSFER);
                 waitMe(0.3, runtime);
                 if(abort){break;}
                 intakeSlide1.set(0.0);

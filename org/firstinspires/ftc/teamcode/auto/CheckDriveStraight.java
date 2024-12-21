@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.auto;
 
+//where all functions for tolerance and if passed target
+//basically a utils class
 public class CheckDriveStraight {
 
     public enum DIRECTION {LEFT, RIGHT, UNKOWN}

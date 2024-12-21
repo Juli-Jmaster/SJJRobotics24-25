@@ -6,8 +6,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import static org.firstinspires.ftc.teamcode.auto.CheckDriveStraight.isWithinTolerance;
 import static org.firstinspires.ftc.teamcode.auto.CheckDriveStraight.turnToCorrectSide;
 
+// class for handling the IMU and its calculations
 public class InterfaceErrorIMU {
-
     private final String name;
     private double rotationLeft = 0;
     private double power = 0.075;
@@ -36,7 +36,6 @@ public class InterfaceErrorIMU {
     public double getYaw(){
         return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)+180;
     }
-
     //get if it not facing the target with a tolerance
     public boolean notFacing(int target){
         rotationLeft=0;
@@ -57,7 +56,6 @@ public class InterfaceErrorIMU {
         }
         return correctDriction;
     }
-
     //returns the power to the left side wheel to turn to correct
     public double getRotationLeftPower(int target) {
         return rotationLeft*(turnToCorrectSide(getYaw(), target) ? 1 : -1);

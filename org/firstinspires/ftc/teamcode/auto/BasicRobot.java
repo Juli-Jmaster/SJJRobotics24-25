@@ -1,16 +1,14 @@
 package org.firstinspires.ftc.teamcode.auto;
 
-import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.auto.servo.AjustableServo;
 import org.firstinspires.ftc.teamcode.auto.servo.FixedPositionServo;
-
+//where all the extra motors and servos are set
 public interface BasicRobot {
 
     // first value is the transfer position and other is outside position
-    int TRANSFERINTAKE = 0;
-    int TRANSFEROUTTAKE = 0;
-    int RETRIEV = 1;
-    int PLACEOUTTAKE = 1;
+    int TRANSFER = 0;
+    int GRAB = 1;
+    int PLACE = 1;
     FixedPositionServo outtakeAngle = new FixedPositionServo("outtakeAngle", new double[]{0.4375, 0.58});
     FixedPositionServo intakeAngle = new FixedPositionServo("intakeAngle", new double[]{0.73, 0.08});
 
