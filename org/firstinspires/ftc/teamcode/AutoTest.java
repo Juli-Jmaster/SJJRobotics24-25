@@ -1,38 +1,41 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.auto.BasicRobot;
 import org.firstinspires.ftc.teamcode.auto.DriveMainAuto;
-import org.firstinspires.ftc.teamcode.auto.InterfaceErrorIMU;
-import org.firstinspires.ftc.teamcode.auto.OdometryMotor;
 import org.firstinspires.ftc.teamcode.auto.UpdatePowerTypes;
 
 import static org.firstinspires.ftc.teamcode.auto.CheckDriveStraight.passedTarget;
 
 @Autonomous
-public class AutoTest extends LinearOpMode implements DriveMainAuto {
+public class AutoTest extends LinearOpMode implements DriveMainAuto, BasicRobot {
 
 
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry.addData("Status", "Initialized");
-        ElapsedTime runtime = new ElapsedTime();
 
         //load motors things
         loadMotors(hardwareMap, new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.UP,
                 RevHubOrientationOnRobot.UsbFacingDirection.RIGHT));
 
+        elavator1.setMotor(hardwareMap.get(DcMotor.class, elavator1.motorname));
+        elavator1.setupMotor();
+        elavator1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        elavator2.setMotor(hardwareMap.get(DcMotor.class, elavator2.motorname));
+        elavator2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         setModeAllDrive(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         //send telemetry data and wait for start
+        DcMotorEx sideways1 = hardwareMap.get(DcMotorEx.class, "sideways");
+
+
         telemetry.update();
         waitForStart();
         runtime.reset();
@@ -40,28 +43,28 @@ public class AutoTest extends LinearOpMode implements DriveMainAuto {
         boolean forward = true;
         boolean where = false;
         double pos ;
+        int straightFacing = 180;
 
-        int target = 180;
-        straight.move(6);
-        int CUR = straight.getMotor().getCurrentPosition();
-        while(!passedTarget(straight.getMotor().getCurrentPosition(), straight.getMotor().getTargetPosition())){
-            imu.notFacing(target);
-            frontRightDrive.setPower(-UpdatePowerTypes.decreaseAtEnd(straight.getMotor(), CUR)-imu.getRotationLeftPower(target));
-            frontLeftDrive.setPower(-UpdatePowerTypes.decreaseAtEnd(straight.getMotor(), CUR)+imu.getRotationLeftPower(target));
-            backLeftDrive.setPower(-UpdatePowerTypes.decreaseAtEnd(straight.getMotor(), CUR)+imu.getRotationLeftPower(target));
-            backRightDrive.setPower(-UpdatePowerTypes.decreaseAtEnd(straight.getMotor(), CUR)-imu.getRotationLeftPower(target));
+        movementStraight(-10, -1, straightFacing);
+        straightFacing=180+45;
+        runtime.reset();
+        while(imu.notFacing(straightFacing, runtime)){
+            telemetry.addData("here","no");
+            telemetry.update();
+            moveWithCorrection(0.0,straightFacing);
         }
-        while(passedTarget(straight.getMotor().getCurrentPosition(), straight.getMotor().getTargetPosition())){
-            imu.notFacing(target);
-            frontRightDrive.setPower(0.1-imu.getRotationLeftPower(target));
-            frontLeftDrive.setPower(0.1+imu.getRotationLeftPower(target));
-            backLeftDrive.setPower(0.1+imu.getRotationLeftPower(target));
-            backRightDrive.setPower(0.1-imu.getRotationLeftPower(target));
+        telemetry.update();
+        sidwaysMovement(8, 1, straightFacing);
+        elavator1.move(3);
+        elavator2.move(3);
+        while(elavator1.getMotor().isBusy()){
+            telemetry.addData("tar", elavator1.getMotor().getTargetPosition());
+            elavator2.setPower(-0.9);
+            elavator1.setPower(-0.9);
         }
-        while(imu.notFacing(target)){
-            rotateToTarget(target);
-        }
-        stopMotors();
+        elavator2.setPower(0.0);
+        elavator1.setPower(0.0);
+
         while(opModeIsActive()){
             telemetry.addData("tar", straight.getMotor().getTargetPosition());
             telemetry.addData("cur", straight.getMotor().getCurrentPosition());
@@ -121,5 +124,11 @@ public class AutoTest extends LinearOpMode implements DriveMainAuto {
     public double equation2(double v){
         return 5.516*v + 817.6;
     }
-
+    public void moveWithCorrection(double power, int target){
+        double rl = imu.getRotationLeftPower(target);
+        backLeftDrive.setPower(power + rl); //backR
+        backRightDrive.setPower(power - rl); //frontL
+        frontLeftDrive.setPower(power + rl);  //frontR
+        frontRightDrive.setPower(power - rl);
+    }
 }

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.auto;
 
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 import static org.firstinspires.ftc.teamcode.auto.CheckDriveStraight.isWithinTolerance;
@@ -37,7 +38,7 @@ public class InterfaceErrorIMU {
         return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)+180;
     }
     //get if it not facing the target with a tolerance
-    public boolean notFacing(int target){
+    public boolean notFacing(int target, ElapsedTime runtime){
         rotationLeft=0;
         boolean correctDriction=false;
         int cur = (int)getYaw();
@@ -53,6 +54,9 @@ public class InterfaceErrorIMU {
         }
         if (!isWithinTolerance(cur, target, 80)){
             rotationLeft+=power;
+        }
+        if(runtime.seconds() > 2){
+            return true;
         }
         return correctDriction;
     }

@@ -78,8 +78,12 @@ public class Drive extends LinearOpMode implements BasicRobot {
         frontleftDrive = hardwareMap.get(DcMotor.class, "frontleft");
         backleftDrive = hardwareMap.get(DcMotor.class, "backleft");
         //load other motors
-        DcMotor elavator1 = hardwareMap.get(DcMotor.class, "elavator1");
-        DcMotor elavator2 = hardwareMap.get(DcMotor.class, "elavator2");
+//        DcMotor elavator1 = hardwareMap.get(DcMotor.class, "elavator1");
+//        DcMotor elavator2 = hardwareMap.get(DcMotor.class, "elavator2");
+
+        elavator1.setMotor(hardwareMap.get(DcMotor.class, elavator1.motorname));
+        elavator1.setupMotor();
+        elavator2.setMotor(hardwareMap.get(DcMotor.class, elavator2.motorname));
 
         //load servos
         outtakeAngle.setServo(hardwareMap.get(Servo.class, outtakeAngle.servoName));
@@ -147,7 +151,7 @@ public class Drive extends LinearOpMode implements BasicRobot {
             }
             telemetry.addData("Servo Position 2", (double) intakeSlide2.getPos());
             telemetry.addData("Servo Position 1", (double) intakeSlide1.getPos());
-            telemetry.addData("preref", gamepad1.dpad_left);
+            telemetry.addData("preref", elavator2.getMotor().getPower());
             //pressed
             telemetry.addData("bpressed", bpressed);
             telemetry.addData("apressed", apressed);
@@ -245,7 +249,7 @@ public class Drive extends LinearOpMode implements BasicRobot {
 
             //set motor power
             elavator2.setPower(elavatorPower);
-            elavator1.setPower(-elavatorPower);
+            elavator1.setPower(elavatorPower);
             telemetry.update();
         }
     }

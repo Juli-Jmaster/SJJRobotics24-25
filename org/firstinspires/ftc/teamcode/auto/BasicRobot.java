@@ -22,5 +22,12 @@ public interface BasicRobot {
     int CLOSE = 1;
     FixedPositionServo outtakeClaw = new FixedPositionServo("outtakeClaw", new double[]{0.036, 0.3});
     FixedPositionServo intakeClaw = new FixedPositionServo("intakeClaw", new double[]{0.0D, 0.05});
+
+    Motor elavator1 = new Motor("elavator1", true, false);
+    Motor elavator2 = new Motor("elavator2", false, false);
+
+
 }
+
+
 
