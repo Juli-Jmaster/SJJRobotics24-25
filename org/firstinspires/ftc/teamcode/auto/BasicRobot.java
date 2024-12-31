@@ -26,7 +26,24 @@ public interface BasicRobot {
     Motor elavator1 = new Motor("elavator1", true, false);
     Motor elavator2 = new Motor("elavator2", false, false);
 
+    //loads the extra motors and servos for this season
+    default void loadAll(HardwareMap hardwareMap){
+        //motors
+        elavator1.setMotor(hardwareMap.get(DcMotor.class, elavator1.motorname));
+        elavator1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        elavator1.setupMotor();
+        elavator2.setMotor(hardwareMap.get(DcMotor.class, elavator2.motorname));
+        elavator2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        elavator2.setupMotor();
 
+        //servos
+        outtakeAngle.setServo(hardwareMap.get(Servo.class, outtakeAngle.servoName));
+        intakeAngle.setServo(hardwareMap.get(Servo.class, intakeAngle.servoName));
+        intakeSlide1.setServo(hardwareMap.get(Servo.class, intakeSlide1.servoName));
+        intakeSlide2.setServo(hardwareMap.get(Servo.class, intakeSlide2.servoName));
+        outtakeClaw.setServo(hardwareMap.get(Servo.class, outtakeClaw.servoName));
+        intakeClaw.setServo(hardwareMap.get(Servo.class, intakeClaw.servoName));
+    }
 }
 
 
