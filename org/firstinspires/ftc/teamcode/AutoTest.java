@@ -48,12 +48,9 @@ public class AutoTest extends LinearOpMode implements DriveMainAuto, BasicRobot 
         movementStraight(-10, -1, straightFacing);
         straightFacing=180+45;
         runtime.reset();
-        while(imu.notFacing(straightFacing, runtime)){
-            telemetry.addData("here","no");
-            telemetry.update();
+        while(imu.notFacingtTmer(straightFacing, runtime, 2)){
             moveWithCorrection(0.0,straightFacing);
         }
-        telemetry.update();
         sidwaysMovement(8, 1, straightFacing);
         elavator1.move(3);
         elavator2.move(3);
