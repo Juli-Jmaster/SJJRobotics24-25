@@ -17,7 +17,6 @@ public interface DriveMainAuto extends MotorUtils {
     OdometryMotor sideways = new OdometryMotor("sideways", OdometryMotor.WHEELTYPE.MM, 48, OdometryMotor.TYPE.TICKPERREV, 2000 );
     InterfaceErrorIMU imu = new InterfaceErrorIMU("imu");
     double turnMaxSpeed = 0.5;
-    ElapsedTime runtime = new ElapsedTime();
 //    DcMotorEx sidewys;
 
 
@@ -159,18 +158,15 @@ public interface DriveMainAuto extends MotorUtils {
     default void movementStraight(double inches, int flip, int straightFacing){
         straight.move(inches);
         int CUR = straight.getMotor().getCurrentPosition();
-        runtime.reset();
         while(!passedTarget(straight.getMotor().getCurrentPosition(), straight.getMotor().getTargetPosition())){
-            imu.notFacing(straightFacing,runtime);
+            imu.notFacing(straightFacing);
             moveWithCorrection((flip*-1)*UpdatePowerTypes.decreaseAtEnd(straight.getMotor(), CUR), straightFacing);
         }
-        runtime.reset();
         while(passedTarget(straight.getMotor().getCurrentPosition(), straight.getMotor().getTargetPosition())){
-            imu.notFacing(straightFacing, runtime);
+            imu.notFacing(straightFacing);
             moveWithCorrection(flip*0.1, straightFacing);
         }
-        runtime.reset();
-        while(imu.notFacing(straightFacing, runtime)){
+        while(imu.notFacing(straightFacing)){
             moveWithCorrection(0.0, straightFacing);
         }
         stopMotors();
@@ -179,18 +175,15 @@ public interface DriveMainAuto extends MotorUtils {
     default void sidwaysMovement(double inches, int flip, int straightFacing){
         sideways.move(inches);
         int CUR = sideways.getMotor().getCurrentPosition();
-        runtime.reset();
         while(!passedTarget(sideways.getMotor().getCurrentPosition(), sideways.getMotor().getTargetPosition())){
-            imu.notFacing(straightFacing, runtime);
+            imu.notFacing(straightFacing);
             moveWithCorrectionSideways((flip*-1)*UpdatePowerTypes.decreaseAtEnd(sideways.getMotor(), CUR), straightFacing);
         }
-        runtime.reset();
         while(passedTarget(sideways.getMotor().getCurrentPosition(), sideways.getMotor().getTargetPosition())){
-            imu.notFacing(straightFacing, runtime);
+            imu.notFacing(straightFacing);
             moveWithCorrectionSideways(flip*0.15, straightFacing);
         }
-        runtime.reset();
-        while(imu.notFacing(straightFacing, runtime)){
+        while(imu.notFacing(straightFacing)){
             moveWithCorrection(0.0, straightFacing);
         }
         moveWithCorrection(0.0, straightFacing);
