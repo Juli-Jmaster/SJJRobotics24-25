@@ -54,10 +54,12 @@ public interface DriveMainAuto extends MotorUtils {
 
     }
 
-    // default void forward(double inches){movementStraight(inches);}
-    //default void backwards(double inches){movementStraight(-inches);}
-    //default void left(int inches){sidwaysMovement(inches);}
-    //default void right(int inches){sidwaysMovement(-inches);}
+    //simplied movement for the motors
+    default void forward(double inches, int straightFacing){movementStraight(inches, 1, straightFacing);}
+    default void backwards(double inches, int straightFacing){movementStraight(-inches, -1, straightFacing);}
+    default void right(int inches, int straightFacing){sidwaysMovement(inches, 1, straightFacing);}
+    default void left(int inches, int straightFacing){sidwaysMovement(-inches, -1, straightFacing);}
+
     default void turnLeft(int degrees, boolean opActive, Telemetry telemetry) throws InterruptedException{
         //set motors to move with just power command
         setModeAllDrive(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
