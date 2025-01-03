@@ -17,6 +17,7 @@ public interface DriveMainAuto extends MotorUtils {
     OdometryMotor sideways = new OdometryMotor("sideways", OdometryMotor.WHEELTYPE.MM, 48, OdometryMotor.TYPE.TICKPERREV, 2000 );
     InterfaceErrorIMU imu = new InterfaceErrorIMU("imu");
     double turnMaxSpeed = 0.5;
+    ElapsedTime runtime = new ElapsedTime();
 //    DcMotorEx sidewys;
 
 
@@ -54,11 +55,12 @@ public interface DriveMainAuto extends MotorUtils {
 
     }
 
-    //simplied movement for the motors
-    default void forward(double inches, int straightFacing){movementStraight(inches, 1, straightFacing);}
-    default void backwards(double inches, int straightFacing){movementStraight(-inches, -1, straightFacing);}
-    default void right(int inches, int straightFacing){sidwaysMovement(inches, 1, straightFacing);}
-    default void left(int inches, int straightFacing){sidwaysMovement(-inches, -1, straightFacing);}
+
+    default void forward(double inches, int straightHeading){movementStraight(inches, 1, straightHeading);}
+    default void backward(double inches, int straightHeading){movementStraight(-inches, -1, straightHeading);}
+
+//    default void backwards(double inches){movementStraight(-inches);}
+    //default void left(int inches){sidwaysMovement(inches);}
 
     default void turnLeft(int degrees, boolean opActive, Telemetry telemetry) throws InterruptedException{
         //set motors to move with just power command
@@ -211,6 +213,15 @@ public interface DriveMainAuto extends MotorUtils {
         frontLeftDrive.setPower(-power + rl);  //frontR
         frontRightDrive.setPower(power - rl);
     }
+
+    default void turnTo(int degree){
+        runtime.reset();
+        while(imu.notFacing(degree)){
+            moveWithCorrection(0.0, degree);
+        }
+        stopMotors();
+    }
+
 
 
 }

@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.auto;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.auto.servo.AjustableServo;
 import org.firstinspires.ftc.teamcode.auto.servo.FixedPositionServo;
 //where all the extra motors and servos are set
@@ -26,6 +29,7 @@ public interface BasicRobot {
     Motor elavator1 = new Motor("elavator1", true, false);
     Motor elavator2 = new Motor("elavator2", false, false);
 
+    int HIGH_BASKET = 3300;
     //loads the extra motors and servos for this season
     default void loadAll(HardwareMap hardwareMap){
         //motors
@@ -44,7 +48,17 @@ public interface BasicRobot {
         outtakeClaw.setServo(hardwareMap.get(Servo.class, outtakeClaw.servoName));
         intakeClaw.setServo(hardwareMap.get(Servo.class, intakeClaw.servoName));
     }
-}
 
+    default void elevator(int ticks){
+        elavator1.move(ticks);
+        elavator2.move(ticks);
+        while(elavator1.getMotor().isBusy()){
+            elavator2.setPower(0.7);
+            elavator1.setPower(0.7);
+        }
+        elavator2.setPower(0.1);
+        elavator1.setPower(0.1);
+    }
+}
 
 
