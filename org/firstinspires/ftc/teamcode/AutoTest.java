@@ -29,6 +29,7 @@ public class AutoTest extends LinearOpMode implements DriveMainAuto, BasicRobot 
         outtakeAngle.set(TRANSFER);
         outtakeClaw.set(CLOSE);
         intakeAngle.set(TRANSFER);
+        intakeClaw.set(OPEN);
         setModeAllDrive(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         //send telemetry data and wait for start
         DcMotorEx sideways1 = hardwareMap.get(DcMotorEx.class, "sideways");
@@ -55,14 +56,70 @@ public class AutoTest extends LinearOpMode implements DriveMainAuto, BasicRobot 
         waitMe(0.4);
         outtakeAngle.set(TRANSFER);
         waitMe(0.4);
-
         straightFacing=straightFacing+45;
         turnTo(straightFacing);
-
         elevator(-HIGH_BASKET);
-        sidwaysMovement(-3, -1, straightFacing);
+
+        sidwaysMovement(4, 1, straightFacing);
         intakeAngle.set(GRAB);
 
+        straightFacing = straightFacing + 7;
+        turnTo(straightFacing);
+
+        forward(14, straightFacing);
+        elevator(300);
+        intakeClaw.set(CLOSE);
+        waitMe(0.4);
+        intakeAngle.set(TRANSFER);
+        waitMe(0.8);
+        elevator(-300);
+
+        outtakeClaw.set(CLOSE);
+        waitMe(0.4);
+        intakeClaw.set(OPEN);
+        backward(12, straightFacing);
+        straightFacing=straightFacing-45;
+        turnTo(straightFacing);
+
+        elevator(HIGH_BASKET);
+        outtakeAngle.set(PLACE);
+        waitMe(0.4);
+        outtakeClaw.set(OPEN);
+        waitMe(0.4);
+        outtakeAngle.set(TRANSFER);
+        waitMe(0.4);
+        straightFacing=straightFacing+45;
+        turnTo(straightFacing);
+        elevator(-HIGH_BASKET);
+
+        sidwaysMovement(-9, -1, straightFacing);
+
+        forward(14, straightFacing);
+        elevator(300);
+        intakeClaw.set(CLOSE);
+        waitMe(0.4);
+        intakeAngle.set(TRANSFER);
+        waitMe(0.8);
+        elevator(-300);
+
+        outtakeClaw.set(CLOSE);
+        waitMe(0.4);
+        intakeClaw.set(OPEN);
+        backward(12, straightFacing);
+        sidwaysMovement(9, 1, straightFacing);
+        straightFacing=straightFacing-45;
+        turnTo(straightFacing);
+
+        elevator(HIGH_BASKET);
+        outtakeAngle.set(PLACE);
+        waitMe(0.4);
+        outtakeClaw.set(OPEN);
+        waitMe(0.4);
+        outtakeAngle.set(TRANSFER);
+        waitMe(0.4);
+        straightFacing=straightFacing+45;
+        turnTo(straightFacing);
+        elevator(-HIGH_BASKET);
         //backward(3,straightFacing);
         //elevator(HIGH_BASKET);
 

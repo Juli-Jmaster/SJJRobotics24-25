@@ -160,6 +160,7 @@ public interface DriveMainAuto extends MotorUtils {
 
 
     default void movementStraight(double inches, int flip, int straightFacing){
+        straight.getMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         straight.move(inches);
         int CUR = straight.getMotor().getCurrentPosition();
         while(!passedTarget(straight.getMotor().getCurrentPosition(), straight.getMotor().getTargetPosition())){
@@ -177,6 +178,7 @@ public interface DriveMainAuto extends MotorUtils {
     }
 
     default void sidwaysMovement(double inches, int flip, int straightFacing){
+        sideways.getMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         sideways.move(inches);
         int CUR = sideways.getMotor().getCurrentPosition();
         while(!passedTarget(sideways.getMotor().getCurrentPosition(), sideways.getMotor().getTargetPosition())){

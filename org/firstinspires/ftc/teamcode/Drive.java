@@ -8,7 +8,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.auto.BasicRobot;
+import org.firstinspires.ftc.teamcode.auto.InterfaceErrorIMU;
 
 
 @TeleOp
@@ -21,9 +24,7 @@ public class Drive extends LinearOpMode implements BasicRobot {
     private DcMotor backleftDrive = null;
 
     // variables for movement of robot;
-    private float y ;
-    private float x ;
-    private float rx;
+    private InterfaceErrorIMU imu = new InterfaceErrorIMU("imu");
 
     private boolean claws = false;
     private boolean bpressed = true;
@@ -35,32 +36,73 @@ public class Drive extends LinearOpMode implements BasicRobot {
     private final double maxPower = 0.6;
 
     public void drive(){//DcMotor backleftDrive, DcMotor backrightDrive, DcMotor frontleftDrive, DcMotor frontrightDrive) {
-        if((rx<0)){
-            rx=-0.65F;
-        }if((rx>0)){
-            rx=0.65F;
-        }
-        backleftDrive.setPower(RangeLimit(y+(x)-rx)); //backR
-        backrightDrive.setPower(RangeLimit(y-(x)+rx)); //frontL
-        frontleftDrive.setPower(RangeLimit(y-(x)-rx));  //frontR
-        frontrightDrive.setPower(RangeLimit(y+(x)+rx));
-        telemetry.addData("drive", RangeLimit(y+x+rx));
+        float y=gamepad1.left_stick_y;
+        float x=gamepad1.left_stick_y;
+        float rx=gamepad1.right_stick_x;
+        //driving robot
+        double leftbPower;
+        double leftfPower;
+        double rightfPower;
+        double rightbPower;
+        double leftPower=0;
+        double rightPower=0;
+//        if(gamepad1.left_stick_x <= 0.2  || gamepad1.left_stick_x >= -0.2  ) {
+//            double drive = gamepad1.left_stick_x;
+//            double turn = Range.clip(gamepad1.left_stick_y + 0.08, -1, 1);
+//            if (turn == 0.08) {
+//                turn = 0;
+//            }
+//            drive = drive *-1;
+//
+//            leftPower = Range.clip(drive - turn, -0.65, 0.65);
+//            rightPower = Range.clip(drive + turn, -0.65, 0.65);
+//
+//            leftbPower = -leftPower;
+//            leftfPower = -leftPower;
+//            rightfPower = -rightPower;
+//            rightbPower = -rightPower;
+//        }
+//        boolean yes = ((rightPower ==0) && (leftPower==0));
+//
+//        if((gamepad1.right_stick_x <= 0.2 && yes) || (gamepad1.right_stick_x >= -0.2 && yes)) {
+//            double urn = Range.clip(gamepad1.right_stick_x + 0.08, -0.65, 0.65);
+//            if (urn == 0.08) {
+//                urn = 0;
+//            }
+//            leftbPower = -urn;
+//            leftfPower = urn;
+//            rightfPower = urn;
+//            rightbPower = -urn;
+//        }
 
+
+        backleftDrive.setPower(RangeLimit(x,y,rx,y+x-rx)); //backR
+        backrightDrive.setPower(RangeLimit(x,y,rx,y-x+rx)); //frontL
+        frontleftDrive.setPower(RangeLimit(x,y,rx,y-x-rx));  //frontR
+        frontrightDrive.setPower(RangeLimit(x,y,rx,y+x+rx));
+
+
+//        telemetry.addData("drive"));
+//        imu.getImu().getRobotAngularVelocity(AngleUnit.DEGREES).
     }
 
-    private double RangeLimit(double value){
-        double denominator = 0;
+    private double RangeLimit(float x,float y, float rx,double value){
+        double denominator = Math.max(Math.abs(y) + Math.abs(x)+ Math.abs(rx), 1);
+        telemetry.addData("x", x);
+        telemetry.addData("y", y);
+        telemetry.addData("rx", rx);
+        telemetry.addData("dem", denominator);
+        telemetry.addData("value", value /  denominator);
 
-        if(Math.abs(y) > 0.2){
-            denominator++;
-        }
-        if(Math.abs(x) > 0.2){
-            denominator++;
-        }
-        if(!(rx==0)){
-            denominator++;
-        }
-        telemetry.addData(" dem", denominator);
+//        if(Math.abs(y) > 0.2){
+//            denominator++;
+//        }
+//        if(Math.abs(x) > 0.2){
+//            denominator++;
+//        }
+//        if(!(rx==0)){
+//            denominator++;
+//        }
         return (value /  denominator) * maxPower;
 
     }
@@ -109,12 +151,13 @@ public class Drive extends LinearOpMode implements BasicRobot {
         claws=false;
 
 
+
         //imu setup
-        IMU imu = hardwareMap.get(IMU.class, "imu");
-        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+        imu.setImu(hardwareMap.get(IMU.class,"imu"));
+        IMU.Parameters parameters =new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.UP,
                 RevHubOrientationOnRobot.UsbFacingDirection.RIGHT));
-        imu.initialize(parameters);
+        imu.getImu().initialize(parameters);
 
         //send telemetry data and wait for start
         telemetry.update();
@@ -126,13 +169,11 @@ public class Drive extends LinearOpMode implements BasicRobot {
             double elavatorPower = 0.1;
 
             //define the controller positions
-            y = gamepad1.left_stick_y;
-            x = gamepad1.left_stick_x;
-            rx = gamepad1.right_stick_x;
             if(gamepad1.dpad_down || gamepad1.dpad_up || gamepad1.dpad_right || gamepad2.dpad_left){
-                y = 0;
-                x = 0;
-                rx = 0;
+                imu.notFacing(180);
+                double rl = imu.getRotationLeftPower(180);
+                float y = 0;
+                float x = 0;
                 if (gamepad1.dpad_up){
                     y= -0.35F;
                 }
@@ -140,12 +181,20 @@ public class Drive extends LinearOpMode implements BasicRobot {
                     y= 0.35F;
                 }
                 if (gamepad1.dpad_left){
-                    x= -0.35F;
+                    x = 0.35F;
+                    backleftDrive.setPower(x + rl); //backR
+                    backrightDrive.setPower(x -rl); //frontL
+                    frontleftDrive.setPower(x +rl);  //frontR
+                    frontrightDrive.setPower(x -rl);
                 }
                 if (gamepad1.dpad_right){
-                    x= 0.35F;
+                    x= -0.35F;
                 }
-                drive();
+                backleftDrive.setPower(RangeLimit(x,y,0,y - x + rl)); //backR
+                backrightDrive.setPower(RangeLimit(x,y,0,y + x -rl)); //frontL
+                frontleftDrive.setPower(RangeLimit(x,y,0,y + x +rl));  //frontR
+                frontrightDrive.setPower(RangeLimit(x,y,0,y - x -rl));
+
             } else {
                 drive();
             }
