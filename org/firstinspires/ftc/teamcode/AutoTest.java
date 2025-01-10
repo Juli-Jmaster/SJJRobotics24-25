@@ -44,84 +44,104 @@ public class AutoTest extends LinearOpMode implements DriveMainAuto, BasicRobot 
         double pos ;
         int straightFacing = 180;
 
+        elevatorMove(HIGH_BASKET);
         backward(20, straightFacing);
         straightFacing=straightFacing+45;
         turnTo(straightFacing);
-        sidwaysMovement(3, 1, straightFacing);
-
-        elevator(HIGH_BASKET);
         outtakeAngle.set(PLACE);
-        waitMe(0.4);
+
+        sidwaysMovement(3, 1, straightFacing);
+        // backward(3, straightFacing);
+
+
+
+        // outtakeAngle.set(PLACE);
+        //waitMe(0.4);
         outtakeClaw.set(OPEN);
         waitMe(0.4);
         outtakeAngle.set(TRANSFER);
         waitMe(0.4);
+        elevatorMove(-HIGH_BASKET-300);
         straightFacing=straightFacing+45;
         turnTo(straightFacing);
-        elevator(-HIGH_BASKET);
 
         sidwaysMovement(4, 1, straightFacing);
         intakeAngle.set(GRAB);
+        outtakeAngle.set(PLACE);
 
         straightFacing = straightFacing + 7;
         turnTo(straightFacing);
 
-        forward(14, straightFacing);
-        elevator(300);
+        forward(13.5, straightFacing);
         intakeClaw.set(CLOSE);
-        waitMe(0.4);
+        waitMe(0.6);
         intakeAngle.set(TRANSFER);
+        waitMe(0.2);
+        outtakeAngle.set(TRANSFER);
         waitMe(0.8);
-        elevator(-300);
-
         outtakeClaw.set(CLOSE);
         waitMe(0.4);
         intakeClaw.set(OPEN);
-        backward(12, straightFacing);
+        elevatorMove(HIGH_BASKET);
+        backward(9, straightFacing);
         straightFacing=straightFacing-45;
         turnTo(straightFacing);
-
-        elevator(HIGH_BASKET);
-        outtakeAngle.set(PLACE);
         waitMe(0.4);
+
+        //possible sideways
+        sidwaysMovement(-3, -1, straightFacing);
+
+        outtakeAngle.set(PLACE);
+        waitMe(0.5);
         outtakeClaw.set(OPEN);
         waitMe(0.4);
         outtakeAngle.set(TRANSFER);
         waitMe(0.4);
+        elevatorMove(-HIGH_BASKET);
         straightFacing=straightFacing+45;
         turnTo(straightFacing);
-        elevator(-HIGH_BASKET);
 
-        sidwaysMovement(-9, -1, straightFacing);
+        sidwaysMovement(-10, -1, straightFacing);
+        intakeAngle.set(GRAB);
+        outtakeAngle.set(PLACE);
 
-        forward(14, straightFacing);
-        elevator(300);
+        //differant from above
+        forward(12.5, straightFacing);
+        intakeClaw.set(CLOSE);
+        waitMe(0.4);
+        intakeAngle.set(TRANSFER);
+        waitMe(0.4);
+        // elevator(-300);
+
         intakeClaw.set(CLOSE);
         waitMe(0.4);
         intakeAngle.set(TRANSFER);
         waitMe(0.8);
-        elevator(-300);
-
+        outtakeAngle.set(TRANSFER);
+        waitMe(0.4);
         outtakeClaw.set(CLOSE);
         waitMe(0.4);
         intakeClaw.set(OPEN);
-        backward(12, straightFacing);
-        sidwaysMovement(9, 1, straightFacing);
-        straightFacing=straightFacing-45;
-        turnTo(straightFacing);
+        // backward(12, straightFacing);
+        // sidwaysMovement(9, 1, straightFacing);
 
-        elevator(HIGH_BASKET);
-        outtakeAngle.set(PLACE);
-        waitMe(0.4);
-        outtakeClaw.set(OPEN);
-        waitMe(0.4);
-        outtakeAngle.set(TRANSFER);
-        waitMe(0.4);
-        straightFacing=straightFacing+45;
-        turnTo(straightFacing);
-        elevator(-HIGH_BASKET);
-        //backward(3,straightFacing);
-        //elevator(HIGH_BASKET);
+        // elevatorMove(HIGH_BASKET);
+        // straightFacing=straightFacing-45;
+        // turnTo(straightFacing);
+
+        // outtakeAngle.set(PLACE);
+        // waitMe(0.4);
+        // outtakeClaw.set(OPEN);
+        // waitMe(0.4);
+        // outtakeAngle.set(TRANSFER);
+        // waitMe(0.4);
+        // elevatorMove(-HIGH_BASKET);
+        // straightFacing=straightFacing+45;
+        // turnTo(straightFacing);
+
+
+
+
 
         // movementStraight(-14, -1, straightFacing);
         // straightFacing=180+45;

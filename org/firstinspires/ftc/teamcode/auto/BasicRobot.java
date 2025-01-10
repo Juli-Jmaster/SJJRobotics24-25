@@ -13,7 +13,7 @@ public interface BasicRobot {
     int GRAB = 1;
     int PLACE = 1;
     FixedPositionServo outtakeAngle = new FixedPositionServo("outtakeAngle", new double[]{0.4375, 0.58});
-    FixedPositionServo intakeAngle = new FixedPositionServo("intakeAngle", new double[]{0.73, 0.08});
+    FixedPositionServo intakeAngle = new FixedPositionServo("intakeAngle", new double[]{0.75, 0.06});
 
     //first position is out and second is all the way in
     int SLIDEOUT = 0;
@@ -23,8 +23,9 @@ public interface BasicRobot {
 
     int OPEN = 0;
     int CLOSE = 1;
-    FixedPositionServo outtakeClaw = new FixedPositionServo("outtakeClaw", new double[]{0.036, 0.3});
-    FixedPositionServo intakeClaw = new FixedPositionServo("intakeClaw", new double[]{0.0D, 0.05});
+    int SLIGHTCLOSE = 2;
+    FixedPositionServo outtakeClaw = new FixedPositionServo("outtakeClaw", new double[]{0.038, 0.32});
+    FixedPositionServo intakeClaw = new FixedPositionServo("intakeClaw", new double[]{0.0D, 0.052, 0.46});
 
     Motor elavator1 = new Motor("elavator1", true, false);
     Motor elavator2 = new Motor("elavator2", false, false);
@@ -58,6 +59,27 @@ public interface BasicRobot {
         }
         elavator2.setPower(0.1);
         elavator1.setPower(0.1);
+    }
+    default void elevatorWhileMove(){
+        if (elavator1.getMotor().isBusy()){
+            elavator2.setPower(0.7);
+            elavator1.setPower(0.7);
+        }
+        if(!(elavator1.getMotor().isBusy())){
+            elavator2.setPower(0.1);
+            elavator1.setPower(0.1);
+        }
+    }
+
+    default void elevatorMove(int ticks){
+        elavator1.move(ticks);
+        elavator2.move(ticks);
+    }
+
+    default void elevatorWait(){
+        while (elavator1.getMotor().isBusy()){
+
+        }
     }
 }
 
