@@ -45,12 +45,12 @@ public class AutoTest extends LinearOpMode implements DriveMainAuto, BasicRobot 
         int straightFacing = 180;
 
         elevatorMove(HIGH_BASKET);
-        backward(20, straightFacing);
+        backward(21, straightFacing);
         straightFacing=straightFacing+45;
         turnTo(straightFacing);
         outtakeAngle.set(PLACE);
 
-        sidwaysMovement(3, 1, straightFacing);
+        sidwaysMovement(2, 1, straightFacing);
         // backward(3, straightFacing);
 
 
@@ -65,7 +65,7 @@ public class AutoTest extends LinearOpMode implements DriveMainAuto, BasicRobot 
         straightFacing=straightFacing+45;
         turnTo(straightFacing);
 
-        sidwaysMovement(4, 1, straightFacing);
+        sidwaysMovement(4.5, 1, straightFacing);
         intakeAngle.set(GRAB);
         outtakeAngle.set(PLACE);
 
@@ -83,13 +83,13 @@ public class AutoTest extends LinearOpMode implements DriveMainAuto, BasicRobot 
         waitMe(0.4);
         intakeClaw.set(OPEN);
         elevatorMove(HIGH_BASKET);
-        backward(9, straightFacing);
+        backward(14, straightFacing);
         straightFacing=straightFacing-45;
         turnTo(straightFacing);
-        waitMe(0.4);
+//        waitMe(0.4);
 
         //possible sideways
-        sidwaysMovement(-3, -1, straightFacing);
+        sidwaysMovement(-2, -1, straightFacing);
 
         outtakeAngle.set(PLACE);
         waitMe(0.5);

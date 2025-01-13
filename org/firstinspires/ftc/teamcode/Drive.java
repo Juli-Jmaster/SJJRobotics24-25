@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.auto.BasicRobot;
 import org.firstinspires.ftc.teamcode.auto.InterfaceErrorIMU;
 
@@ -36,54 +35,19 @@ public class Drive extends LinearOpMode implements BasicRobot {
     private final double maxPower = 0.6;
 
     public void drive(){//DcMotor backleftDrive, DcMotor backrightDrive, DcMotor frontleftDrive, DcMotor frontrightDrive) {
-        float y=gamepad1.left_stick_y;
-        float x=gamepad1.left_stick_y;
-        float rx=gamepad1.right_stick_x;
-        //driving robot
-        double leftbPower;
-        double leftfPower;
-        double rightfPower;
-        double rightbPower;
-        double leftPower=0;
-        double rightPower=0;
-//        if(gamepad1.left_stick_x <= 0.2  || gamepad1.left_stick_x >= -0.2  ) {
-//            double drive = gamepad1.left_stick_x;
-//            double turn = Range.clip(gamepad1.left_stick_y + 0.08, -1, 1);
-//            if (turn == 0.08) {
-//                turn = 0;
-//            }
-//            drive = drive *-1;
-//
-//            leftPower = Range.clip(drive - turn, -0.65, 0.65);
-//            rightPower = Range.clip(drive + turn, -0.65, 0.65);
-//
-//            leftbPower = -leftPower;
-//            leftfPower = -leftPower;
-//            rightfPower = -rightPower;
-//            rightbPower = -rightPower;
-//        }
-//        boolean yes = ((rightPower ==0) && (leftPower==0));
-//
-//        if((gamepad1.right_stick_x <= 0.2 && yes) || (gamepad1.right_stick_x >= -0.2 && yes)) {
-//            double urn = Range.clip(gamepad1.right_stick_x + 0.08, -0.65, 0.65);
-//            if (urn == 0.08) {
-//                urn = 0;
-//            }
-//            leftbPower = -urn;
-//            leftfPower = urn;
-//            rightfPower = urn;
-//            rightbPower = -urn;
-//        }
+        // float y=gamepad1.left_stick_x;
+        // float x=gamepad1.left_stick_y;
+        // float rx=gamepad1.right_stick_x;
+
+        // backleftDrive.setPower(RangeLimit(x,y,rx,y+x-rx)); //backR
+        // backrightDrive.setPower(RangeLimit(x,y,rx,y-x+rx)); //frontL
+        // frontleftDrive.setPower(RangeLimit(x,y,rx,y-x-rx));  //frontR
+        // frontrightDrive.setPower(RangeLimit(x,y,rx,y+x+rx);
 
 
-        backleftDrive.setPower(RangeLimit(x,y,rx,y+x-rx)); //backR
-        backrightDrive.setPower(RangeLimit(x,y,rx,y-x+rx)); //frontL
-        frontleftDrive.setPower(RangeLimit(x,y,rx,y-x-rx));  //frontR
-        frontrightDrive.setPower(RangeLimit(x,y,rx,y+x+rx));
+        telemetry.addData("x", gamepad1.left_stick_x);
+        telemetry.addData("y", gamepad1.left_stick_y);
 
-
-//        telemetry.addData("drive"));
-//        imu.getImu().getRobotAngularVelocity(AngleUnit.DEGREES).
     }
 
     private double RangeLimit(float x,float y, float rx,double value){
@@ -94,17 +58,7 @@ public class Drive extends LinearOpMode implements BasicRobot {
         telemetry.addData("dem", denominator);
         telemetry.addData("value", value /  denominator);
 
-//        if(Math.abs(y) > 0.2){
-//            denominator++;
-//        }
-//        if(Math.abs(x) > 0.2){
-//            denominator++;
-//        }
-//        if(!(rx==0)){
-//            denominator++;
-//        }
-        return (value /  denominator) * maxPower;
-
+        return denominator;
     }
 
 
@@ -168,36 +122,16 @@ public class Drive extends LinearOpMode implements BasicRobot {
             //is used a constant, so it stay at its current position
             double elavatorPower = 0.1;
 
-            //define the controller positions
-            if(gamepad1.dpad_down || gamepad1.dpad_up || gamepad1.dpad_right || gamepad2.dpad_left){
-                imu.notFacing(180);
-                double rl = imu.getRotationLeftPower(180);
-                float y = 0;
-                float x = 0;
-                if (gamepad1.dpad_up){
-                    y= -0.35F;
-                }
-                if (gamepad1.dpad_down){
-                    y= 0.35F;
-                }
-                if (gamepad1.dpad_left){
-                    x = 0.35F;
-                    backleftDrive.setPower(x + rl); //backR
-                    backrightDrive.setPower(x -rl); //frontL
-                    frontleftDrive.setPower(x +rl);  //frontR
-                    frontrightDrive.setPower(x -rl);
-                }
-                if (gamepad1.dpad_right){
-                    x= -0.35F;
-                }
-                backleftDrive.setPower(RangeLimit(x,y,0,y - x + rl)); //backR
-                backrightDrive.setPower(RangeLimit(x,y,0,y + x -rl)); //frontL
-                frontleftDrive.setPower(RangeLimit(x,y,0,y + x +rl));  //frontR
-                frontrightDrive.setPower(RangeLimit(x,y,0,y - x -rl));
+            double y = gamepad1.left_stick_y;
+            double x = gamepad1.left_stick_x;
+            double rx = gamepad1.right_stick_x;
 
-            } else {
-                drive();
-            }
+            backleftDrive.setPower((y+x-rx)*0.8); //backR
+            backrightDrive.setPower((y-x+rx)*0.8); //frontL
+            frontleftDrive.setPower((y-x-rx)*0.8);  //frontR
+            frontrightDrive.setPower((y+x+rx)*0.8);
+
+
             telemetry.addData("Servo Position 2", (double) intakeSlide2.getPos());
             telemetry.addData("Servo Position 1", (double) intakeSlide1.getPos());
             telemetry.addData("preref", elavator2.getMotor().getPower());
@@ -209,7 +143,7 @@ public class Drive extends LinearOpMode implements BasicRobot {
             if (gamepad2.a && apressed == true) {
                 if (!claws) {
                     intakeClaw.set(CLOSE);//intakeClawPosition.close.position);
-                    waitMe(0.4, runtime);
+                    waitMe(0.2, runtime);
                     outtakeClaw.set(OPEN);
 //                    outtakeClaw.setPosition(outtakeClawPosition.open.position);
                     claws = true;
@@ -226,6 +160,7 @@ public class Drive extends LinearOpMode implements BasicRobot {
             if (gamepad2.b && bpressed == true) {
                 if (intakeAngle.get(GRAB) + 0.1 > intakeAngle.getPos() && intakeAngle.get(GRAB) - 0.1 < intakeAngle.getPos()) {
                     intakeAngle.set(TRANSFER);
+
                 } else if (intakeAngle.get(TRANSFER) + 0.1 > intakeAngle.getPos() && intakeAngle.get(TRANSFER) - 0.1 < intakeAngle.getPos()) {
                     intakeAngle.set(GRAB);
                 }
@@ -304,8 +239,7 @@ public class Drive extends LinearOpMode implements BasicRobot {
     }
     private void waitMe(double sec, ElapsedTime runtime){
         runtime.reset();
-        while (runtime.seconds() < sec && abort==false) {
+        while (runtime.seconds() < sec) {
         }
     }
 }
-

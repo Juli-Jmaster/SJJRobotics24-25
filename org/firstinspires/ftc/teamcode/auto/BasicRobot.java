@@ -12,7 +12,7 @@ public interface BasicRobot {
     int TRANSFER = 0;
     int GRAB = 1;
     int PLACE = 1;
-    FixedPositionServo outtakeAngle = new FixedPositionServo("outtakeAngle", new double[]{0.4375, 0.58});
+    FixedPositionServo outtakeAngle = new FixedPositionServo("outtakeAngle", new double[]{0.441+.028, 0.589+.03});
     FixedPositionServo intakeAngle = new FixedPositionServo("intakeAngle", new double[]{0.75, 0.06});
 
     //first position is out and second is all the way in
@@ -24,7 +24,7 @@ public interface BasicRobot {
     int OPEN = 0;
     int CLOSE = 1;
     int SLIGHTCLOSE = 2;
-    FixedPositionServo outtakeClaw = new FixedPositionServo("outtakeClaw", new double[]{0.038, 0.32});
+    FixedPositionServo outtakeClaw = new FixedPositionServo("outtakeClaw", new double[]{0.2, 0.34});
     FixedPositionServo intakeClaw = new FixedPositionServo("intakeClaw", new double[]{0.0D, 0.052, 0.46});
 
     Motor elavator1 = new Motor("elavator1", true, false);
