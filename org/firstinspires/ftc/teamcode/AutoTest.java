@@ -25,12 +25,11 @@ public class AutoTest extends LinearOpMode implements DriveMainAuto, BasicRobot 
                 RevHubOrientationOnRobot.LogoFacingDirection.UP,
                 RevHubOrientationOnRobot.UsbFacingDirection.RIGHT));
 
-        elavator1.setMotor(hardwareMap.get(DcMotor.class, elavator1.motorname));
-        elavator1.setupMotor();
-        elavator1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        elavator2.setMotor(hardwareMap.get(DcMotor.class, elavator2.motorname));
-        elavator2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
+        loadAll(hardwareMap);
+        outtakeAngle.set(TRANSFER);
+        outtakeClaw.set(CLOSE);
+        intakeAngle.set(TRANSFER);
+        intakeClaw.set(OPEN);
         setModeAllDrive(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         //send telemetry data and wait for start
         DcMotorEx sideways1 = hardwareMap.get(DcMotorEx.class, "sideways");
@@ -45,22 +44,123 @@ public class AutoTest extends LinearOpMode implements DriveMainAuto, BasicRobot 
         double pos ;
         int straightFacing = 180;
 
-        movementStraight(-10, -1, straightFacing);
-        straightFacing=180+45;
-        runtime.reset();
-        while(imu.notFacingtTmer(straightFacing, runtime, 2)){
-            moveWithCorrection(0.0,straightFacing);
-        }
-        sidwaysMovement(8, 1, straightFacing);
-        elavator1.move(3);
-        elavator2.move(3);
-        while(elavator1.getMotor().isBusy()){
-            telemetry.addData("tar", elavator1.getMotor().getTargetPosition());
-            elavator2.setPower(-0.9);
-            elavator1.setPower(-0.9);
-        }
-        elavator2.setPower(0.0);
-        elavator1.setPower(0.0);
+        elevatorMove(HIGH_BASKET);
+        backward(21, straightFacing);
+        straightFacing=straightFacing+45;
+        turnTo(straightFacing);
+        outtakeAngle.set(PLACE);
+
+        sidwaysMovement(2, 1, straightFacing);
+        // backward(3, straightFacing);
+
+
+
+        // outtakeAngle.set(PLACE);
+        //waitMe(0.4);
+        outtakeClaw.set(OPEN);
+        waitMe(0.4);
+        outtakeAngle.set(TRANSFER);
+        waitMe(0.4);
+        elevatorMove(-HIGH_BASKET-300);
+        straightFacing=straightFacing+45;
+        turnTo(straightFacing);
+
+        sidwaysMovement(4.5, 1, straightFacing);
+        intakeAngle.set(GRAB);
+        outtakeAngle.set(PLACE);
+
+        straightFacing = straightFacing + 7;
+        turnTo(straightFacing);
+
+        forward(13.5, straightFacing);
+        intakeClaw.set(CLOSE);
+        waitMe(0.6);
+        intakeAngle.set(TRANSFER);
+        waitMe(0.2);
+        outtakeAngle.set(TRANSFER);
+        waitMe(0.8);
+        outtakeClaw.set(CLOSE);
+        waitMe(0.4);
+        intakeClaw.set(OPEN);
+        elevatorMove(HIGH_BASKET);
+        backward(14, straightFacing);
+        straightFacing=straightFacing-45;
+        turnTo(straightFacing);
+//        waitMe(0.4);
+
+        //possible sideways
+        sidwaysMovement(-2, -1, straightFacing);
+
+        outtakeAngle.set(PLACE);
+        waitMe(0.5);
+        outtakeClaw.set(OPEN);
+        waitMe(0.4);
+        outtakeAngle.set(TRANSFER);
+        waitMe(0.4);
+        elevatorMove(-HIGH_BASKET);
+        straightFacing=straightFacing+45;
+        turnTo(straightFacing);
+
+        sidwaysMovement(-10, -1, straightFacing);
+        intakeAngle.set(GRAB);
+        outtakeAngle.set(PLACE);
+
+        //differant from above
+        forward(12.5, straightFacing);
+        intakeClaw.set(CLOSE);
+        waitMe(0.4);
+        intakeAngle.set(TRANSFER);
+        waitMe(0.4);
+        // elevator(-300);
+
+        intakeClaw.set(CLOSE);
+        waitMe(0.4);
+        intakeAngle.set(TRANSFER);
+        waitMe(0.8);
+        outtakeAngle.set(TRANSFER);
+        waitMe(0.4);
+        outtakeClaw.set(CLOSE);
+        waitMe(0.4);
+        intakeClaw.set(OPEN);
+        // backward(12, straightFacing);
+        // sidwaysMovement(9, 1, straightFacing);
+
+        // elevatorMove(HIGH_BASKET);
+        // straightFacing=straightFacing-45;
+        // turnTo(straightFacing);
+
+        // outtakeAngle.set(PLACE);
+        // waitMe(0.4);
+        // outtakeClaw.set(OPEN);
+        // waitMe(0.4);
+        // outtakeAngle.set(TRANSFER);
+        // waitMe(0.4);
+        // elevatorMove(-HIGH_BASKET);
+        // straightFacing=straightFacing+45;
+        // turnTo(straightFacing);
+
+
+
+
+
+        // movementStraight(-14, -1, straightFacing);
+        // straightFacing=180+45;
+        // runtime.reset();
+        // while(imu.notFacing(straightFacing, runtime)){
+        //     telemetry.addData("here","no");
+        //     telemetry.update();
+        //     moveWithCorrection(0.0,straightFacing);
+        // }
+        // telemetry.update();
+        // elavator1.move(3);
+        // elavator2.move(3);
+        // while(elavator1.getMotor().isBusy()){
+        //     telemetry.addData("tar", elavator1.getMotor().getTargetPosition());
+        //     elavator2.setPower(-0.9);
+        //     elavator1.setPower(-0.9);
+        // }
+        // elavator2.setPower(0.0);
+        // elavator1.setPower(0.0);
 
         while(opModeIsActive()){
             telemetry.addData("tar", straight.getMotor().getTargetPosition());
@@ -100,32 +200,17 @@ public class AutoTest extends LinearOpMode implements DriveMainAuto, BasicRobot 
         // }
     }
 
-    public void rotateToTarget(int target) {
-        double rl = imu.getRotationLeftPower(target);
-        backLeftDrive.setPower(rl); //backR
-        backRightDrive.setPower(-rl); //frontL
-        frontLeftDrive.setPower(rl);  //frontR
-        frontRightDrive.setPower(-rl);
-    }
-
-    public double naturalLog(double v){
-        return Math.log(v) / Math.log(Math.E);
-    }
-
-    public double equation(double v){
-        if(v > 12){
-            return equation2(v);
-        }
-        return 273.6772+231.96* naturalLog(v);
-    }
-    public double equation2(double v){
-        return 5.516*v + 817.6;
-    }
     public void moveWithCorrection(double power, int target){
         double rl = imu.getRotationLeftPower(target);
         backLeftDrive.setPower(power + rl); //backR
         backRightDrive.setPower(power - rl); //frontL
         frontLeftDrive.setPower(power + rl);  //frontR
         frontRightDrive.setPower(power - rl);
+    }
+
+    private void waitMe(double sec){
+        runtime.reset();
+        while (runtime.seconds() < sec) {
+        }
     }
 }

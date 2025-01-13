@@ -8,7 +8,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.auto.BasicRobot;
+import org.firstinspires.ftc.teamcode.auto.InterfaceErrorIMU;
 
 
 @TeleOp
@@ -21,9 +23,7 @@ public class Drive extends LinearOpMode implements BasicRobot {
     private DcMotor backleftDrive = null;
 
     // variables for movement of robot;
-    private float y ;
-    private float x ;
-    private float rx;
+    private InterfaceErrorIMU imu = new InterfaceErrorIMU("imu");
 
     private boolean claws = false;
     private boolean bpressed = true;
@@ -35,34 +35,30 @@ public class Drive extends LinearOpMode implements BasicRobot {
     private final double maxPower = 0.6;
 
     public void drive(){//DcMotor backleftDrive, DcMotor backrightDrive, DcMotor frontleftDrive, DcMotor frontrightDrive) {
-        if((rx<0)){
-            rx=-0.65F;
-        }if((rx>0)){
-            rx=0.65F;
-        }
-        backleftDrive.setPower(RangeLimit(y+(x)-rx)); //backR
-        backrightDrive.setPower(RangeLimit(y-(x)+rx)); //frontL
-        frontleftDrive.setPower(RangeLimit(y-(x)-rx));  //frontR
-        frontrightDrive.setPower(RangeLimit(y+(x)+rx));
-        telemetry.addData("drive", RangeLimit(y+x+rx));
+        // float y=gamepad1.left_stick_x;
+        // float x=gamepad1.left_stick_y;
+        // float rx=gamepad1.right_stick_x;
+
+        // backleftDrive.setPower(RangeLimit(x,y,rx,y+x-rx)); //backR
+        // backrightDrive.setPower(RangeLimit(x,y,rx,y-x+rx)); //frontL
+        // frontleftDrive.setPower(RangeLimit(x,y,rx,y-x-rx));  //frontR
+        // frontrightDrive.setPower(RangeLimit(x,y,rx,y+x+rx);
+
+
+        telemetry.addData("x", gamepad1.left_stick_x);
+        telemetry.addData("y", gamepad1.left_stick_y);
 
     }
 
-    private double RangeLimit(double value){
-        double denominator = 0;
+    private double RangeLimit(float x,float y, float rx,double value){
+        double denominator = Math.max(Math.abs(y) + Math.abs(x)+ Math.abs(rx), 1);
+        telemetry.addData("x", x);
+        telemetry.addData("y", y);
+        telemetry.addData("rx", rx);
+        telemetry.addData("dem", denominator);
+        telemetry.addData("value", value /  denominator);
 
-        if(Math.abs(y) > 0.2){
-            denominator++;
-        }
-        if(Math.abs(x) > 0.2){
-            denominator++;
-        }
-        if(!(rx==0)){
-            denominator++;
-        }
-        telemetry.addData(" dem", denominator);
-        return (value /  denominator) * maxPower;
-
+        return denominator;
     }
 
 
@@ -109,12 +105,13 @@ public class Drive extends LinearOpMode implements BasicRobot {
         claws=false;
 
 
+
         //imu setup
-        IMU imu = hardwareMap.get(IMU.class, "imu");
-        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+        imu.setImu(hardwareMap.get(IMU.class,"imu"));
+        IMU.Parameters parameters =new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.UP,
                 RevHubOrientationOnRobot.UsbFacingDirection.RIGHT));
-        imu.initialize(parameters);
+        imu.getImu().initialize(parameters);
 
         //send telemetry data and wait for start
         telemetry.update();
@@ -125,30 +122,16 @@ public class Drive extends LinearOpMode implements BasicRobot {
             //is used a constant, so it stay at its current position
             double elavatorPower = 0.1;
 
-            //define the controller positions
-            y = gamepad1.left_stick_y;
-            x = gamepad1.left_stick_x;
-            rx = gamepad1.right_stick_x;
-            if(gamepad1.dpad_down || gamepad1.dpad_up || gamepad1.dpad_right || gamepad2.dpad_left){
-                y = 0;
-                x = 0;
-                rx = 0;
-                if (gamepad1.dpad_up){
-                    y= -0.35F;
-                }
-                if (gamepad1.dpad_down){
-                    y= 0.35F;
-                }
-                if (gamepad1.dpad_left){
-                    x= -0.35F;
-                }
-                if (gamepad1.dpad_right){
-                    x= 0.35F;
-                }
-                drive();
-            } else {
-                drive();
-            }
+            double y = gamepad1.left_stick_y;
+            double x = gamepad1.left_stick_x;
+            double rx = gamepad1.right_stick_x;
+
+            backleftDrive.setPower((y+x-rx)*0.8); //backR
+            backrightDrive.setPower((y-x+rx)*0.8); //frontL
+            frontleftDrive.setPower((y-x-rx)*0.8);  //frontR
+            frontrightDrive.setPower((y+x+rx)*0.8);
+
+
             telemetry.addData("Servo Position 2", (double) intakeSlide2.getPos());
             telemetry.addData("Servo Position 1", (double) intakeSlide1.getPos());
             telemetry.addData("preref", elavator2.getMotor().getPower());
@@ -160,7 +143,7 @@ public class Drive extends LinearOpMode implements BasicRobot {
             if (gamepad2.a && apressed == true) {
                 if (!claws) {
                     intakeClaw.set(CLOSE);//intakeClawPosition.close.position);
-                    waitMe(0.4, runtime);
+                    waitMe(0.2, runtime);
                     outtakeClaw.set(OPEN);
 //                    outtakeClaw.setPosition(outtakeClawPosition.open.position);
                     claws = true;
@@ -177,6 +160,7 @@ public class Drive extends LinearOpMode implements BasicRobot {
             if (gamepad2.b && bpressed == true) {
                 if (intakeAngle.get(GRAB) + 0.1 > intakeAngle.getPos() && intakeAngle.get(GRAB) - 0.1 < intakeAngle.getPos()) {
                     intakeAngle.set(TRANSFER);
+
                 } else if (intakeAngle.get(TRANSFER) + 0.1 > intakeAngle.getPos() && intakeAngle.get(TRANSFER) - 0.1 < intakeAngle.getPos()) {
                     intakeAngle.set(GRAB);
                 }
@@ -255,8 +239,7 @@ public class Drive extends LinearOpMode implements BasicRobot {
     }
     private void waitMe(double sec, ElapsedTime runtime){
         runtime.reset();
-        while (runtime.seconds() < sec && abort==false) {
+        while (runtime.seconds() < sec) {
         }
     }
 }
-

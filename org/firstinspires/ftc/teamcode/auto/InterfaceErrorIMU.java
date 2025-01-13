@@ -15,7 +15,7 @@ import static org.firstinspires.ftc.teamcode.auto.CheckDriveStraight.turnToCorre
 public class InterfaceErrorIMU {
     private final String name;
     private double rotationLeft = 0;
-    private double power = 0.075;
+    private double power = 0.1;
     private IMU imu;
 
     public InterfaceErrorIMU(String name){
@@ -41,11 +41,34 @@ public class InterfaceErrorIMU {
     public double getYaw(){
         return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)+180;
     }
-    //returns the power to the left side wheel to turn to correct
-    public double getRotationLeftPower(int target) {
-        return rotationLeft*(turnToCorrectSide(getYaw(), target) ? 1 : -1);
+    //get if it not facing the target with a tolerance within a time limit
+    //broken timer
+    public boolean notFacingTimer(int target, ElapsedTime runtime, int time){
+        rotationLeft=0;
+        boolean correctDriction=false;
+        int cur = (int)getYaw();
+        if (!isWithinTolerance(cur, target, 3)){
+            rotationLeft+=power;
+            correctDriction=true;
+        }
+        if (!isWithinTolerance(cur, target, 7)){
+            rotationLeft+=power;
+        }
+        if (!isWithinTolerance(cur, target, 20)){
+            rotationLeft+=power;
+        }
+        if (!isWithinTolerance(cur, target, 40)){
+            rotationLeft+=power;
+        }
+        if (!isWithinTolerance(cur, target, 80)){
+            rotationLeft+=power;
+        }
+        // if(runtime.seconds() > time){
+        //     correctDriction=true;
+        // }
+        return correctDriction;
     }
-    
+
     //get if it not facing the target with a tolerance
     public boolean notFacing(int target){
         rotationLeft=0;
@@ -55,38 +78,22 @@ public class InterfaceErrorIMU {
             rotationLeft+=power;
             correctDriction=true;
         }
+        if (!isWithinTolerance(cur, target, 7)){
+            rotationLeft+=power;
+        }
+        if (!isWithinTolerance(cur, target, 15)){
+            rotationLeft+=power;
+        }
         if (!isWithinTolerance(cur, target, 20)){
             rotationLeft+=power;
         }
         if (!isWithinTolerance(cur, target, 40)){
-            rotationLeft+=power;
-        }
-        if (!isWithinTolerance(cur, target, 80)){
             rotationLeft+=power;
         }
         return correctDriction;
     }
-    //get if it not facing the target with a tolerance within a time limit
-    public boolean notFacingtTmer(int target, ElapsedTime runtime, int limit){
-        rotationLeft=0;
-        boolean correctDriction=false;
-        int cur = (int)getYaw();
-        if (!isWithinTolerance(cur, target, 3)){
-            rotationLeft+=power;
-            correctDriction=true;
-        }
-        if (!isWithinTolerance(cur, target, 20)){
-            rotationLeft+=power;
-        }
-        if (!isWithinTolerance(cur, target, 40)){
-            rotationLeft+=power;
-        }
-        if (!isWithinTolerance(cur, target, 80)){
-            rotationLeft+=power;
-        }
-        if(runtime.seconds() > limit){
-            return true;
-        }
-        return correctDriction;
+    //returns the power to the left side wheel to turn to correct
+    public double getRotationLeftPower(int target) {
+        return rotationLeft*(turnToCorrectSide(getYaw(), target) ? 1 : -1);
     }
 }

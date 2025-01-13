@@ -11,13 +11,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import static java.lang.Thread.sleep;
 import static org.firstinspires.ftc.teamcode.auto.CheckDriveStraight.passedTarget;
 
-public interface DriveMainAuto extends MotorUtils {
+public interface DriveMainAuto extends MotorUtils, BasicRobot{
 
     OdometryMotor straight = new OdometryMotor("straight", OdometryMotor.WHEELTYPE.MM, 48, OdometryMotor.TYPE.TICKPERREV, 2000 );
     OdometryMotor sideways = new OdometryMotor("sideways", OdometryMotor.WHEELTYPE.MM, 48, OdometryMotor.TYPE.TICKPERREV, 2000 );
     InterfaceErrorIMU imu = new InterfaceErrorIMU("imu");
     double turnMaxSpeed = 0.5;
-//    DcMotorEx sidewys;
+    ElapsedTime runtime = new ElapsedTime();
 
 
     default void loadMotors(HardwareMap hardwareMap, ImuOrientationOnRobot imuOrientationOnRobot){
@@ -55,10 +55,11 @@ public interface DriveMainAuto extends MotorUtils {
     }
 
     //simplied movement for the motors
-    default void forward(double inches, int straightFacing){movementStraight(inches, 1, straightFacing);}
-    default void backwards(double inches, int straightFacing){movementStraight(-inches, -1, straightFacing);}
-    default void right(int inches, int straightFacing){sidwaysMovement(inches, 1, straightFacing);}
-    default void left(int inches, int straightFacing){sidwaysMovement(-inches, -1, straightFacing);}
+    default void forward(double inches, int straightHeading){movementStraight(inches, 1, straightHeading);}
+    default void backward(double inches, int straightHeading){movementStraight(-inches, -1, straightHeading);}
+
+    //default void backwards(double inches){movementStraight(-inches);}
+    //default void left(int inches){sidwaysMovement(inches);}
 
     default void turnLeft(int degrees, boolean opActive, Telemetry telemetry) throws InterruptedException{
         //set motors to move with just power command
@@ -158,23 +159,28 @@ public interface DriveMainAuto extends MotorUtils {
 
 
     default void movementStraight(double inches, int flip, int straightFacing){
+        straight.getMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         straight.move(inches);
         int CUR = straight.getMotor().getCurrentPosition();
         while(!passedTarget(straight.getMotor().getCurrentPosition(), straight.getMotor().getTargetPosition())){
             imu.notFacing(straightFacing);
             moveWithCorrection((flip*-1)*UpdatePowerTypes.decreaseAtEnd(straight.getMotor(), CUR), straightFacing);
+            elevatorWhileMove();
         }
         while(passedTarget(straight.getMotor().getCurrentPosition(), straight.getMotor().getTargetPosition())){
             imu.notFacing(straightFacing);
             moveWithCorrection(flip*0.1, straightFacing);
+            elevatorWhileMove();
         }
         while(imu.notFacing(straightFacing)){
             moveWithCorrection(0.0, straightFacing);
+            elevatorWhileMove();
         }
         stopMotors();
     }
 
     default void sidwaysMovement(double inches, int flip, int straightFacing){
+        sideways.getMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         sideways.move(inches);
         int CUR = sideways.getMotor().getCurrentPosition();
         while(!passedTarget(sideways.getMotor().getCurrentPosition(), sideways.getMotor().getTargetPosition())){
@@ -211,6 +217,16 @@ public interface DriveMainAuto extends MotorUtils {
         frontLeftDrive.setPower(-power + rl);  //frontR
         frontRightDrive.setPower(power - rl);
     }
+
+    default void turnTo(int degree){
+        runtime.reset();
+        while(imu.notFacing(degree)){
+            moveWithCorrection(0.0, degree);
+            elevatorWhileMove();
+        }
+        stopMotors();
+    }
+
 
 
 }
