@@ -18,7 +18,6 @@ public interface DriveMainAuto extends MotorUtils, BasicRobot{
     InterfaceErrorIMU imu = new InterfaceErrorIMU("imu");
     double turnMaxSpeed = 0.5;
     ElapsedTime runtime = new ElapsedTime();
-//    DcMotorEx sidewys;
 
 
     default void loadMotors(HardwareMap hardwareMap, ImuOrientationOnRobot imuOrientationOnRobot){
@@ -55,11 +54,11 @@ public interface DriveMainAuto extends MotorUtils, BasicRobot{
 
     }
 
-
+    //simplied movement for the motors
     default void forward(double inches, int straightHeading){movementStraight(inches, 1, straightHeading);}
     default void backward(double inches, int straightHeading){movementStraight(-inches, -1, straightHeading);}
 
-//    default void backwards(double inches){movementStraight(-inches);}
+    //default void backwards(double inches){movementStraight(-inches);}
     //default void left(int inches){sidwaysMovement(inches);}
 
     default void turnLeft(int degrees, boolean opActive, Telemetry telemetry) throws InterruptedException{

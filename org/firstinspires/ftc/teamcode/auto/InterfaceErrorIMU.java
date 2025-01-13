@@ -8,6 +8,10 @@ import static org.firstinspires.ftc.teamcode.auto.CheckDriveStraight.isWithinTol
 import static org.firstinspires.ftc.teamcode.auto.CheckDriveStraight.turnToCorrectSide;
 
 // class for handling the IMU and its calculations
+//because of how the robot gets its data in -180 to 180
+//the defalt straight is 180 becasue we mad it so now the values are between 0 and 360
+//just added +180 to original number
+//thats why the new straight ahead is 180
 public class InterfaceErrorIMU {
     private final String name;
     private double rotationLeft = 0;
@@ -37,7 +41,8 @@ public class InterfaceErrorIMU {
     public double getYaw(){
         return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)+180;
     }
-    //get if it not facing the target with a tolerance
+    //get if it not facing the target with a tolerance within a time limit
+    //broken timer
     public boolean notFacingTimer(int target, ElapsedTime runtime, int time){
         rotationLeft=0;
         boolean correctDriction=false;
@@ -64,6 +69,7 @@ public class InterfaceErrorIMU {
         return correctDriction;
     }
 
+    //get if it not facing the target with a tolerance
     public boolean notFacing(int target){
         rotationLeft=0;
         boolean correctDriction=false;
