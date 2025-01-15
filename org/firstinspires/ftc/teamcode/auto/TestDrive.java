@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
+
+//its a test drive to see if motors need to be reversed
 @TeleOp
 public class TestDrive extends LinearOpMode implements DriveMainAuto {
     @Override
