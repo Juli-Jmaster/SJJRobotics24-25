@@ -2,8 +2,10 @@ package org.firstinspires.ftc.teamcode.auto;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
+@TeleOp
 public class TestDrive extends LinearOpMode implements DriveMainAuto {
     @Override
     public void runOpMode() throws InterruptedException {
