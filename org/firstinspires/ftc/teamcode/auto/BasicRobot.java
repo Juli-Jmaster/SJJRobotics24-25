@@ -27,8 +27,9 @@ public interface BasicRobot {
     FixedPositionServo outtakeClaw = new FixedPositionServo("outtakeClaw", new double[]{0.2, 0.34});
     FixedPositionServo intakeClaw = new FixedPositionServo("intakeClaw", new double[]{0.0D, 0.052, 0.46});
 
-    Motor elavator1 = new Motor("elavator1", true, false);
-    Motor elavator2 = new Motor("elavator2", false, false);
+    //need to fix now that motor have brake enabled; all needs to done in motor class thou
+    Motor elavator1 = new Motor("elavator1", true, true,false);
+    Motor elavator2 = new Motor("elavator2", false, true,false);
 
     int HIGH_BASKET = 3300;
     //loads the extra motors and servos for this season

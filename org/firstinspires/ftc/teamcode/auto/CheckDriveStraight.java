@@ -4,7 +4,7 @@ package org.firstinspires.ftc.teamcode.auto;
 //basically a utils class
 public class CheckDriveStraight {
 
-    public enum DIRECTION {LEFT, RIGHT, UNKOWN}
+//    public enum DIRECTION {LEFT, RIGHT, UNKOWN}
 
     // Function to check if an angle is within 5 degrees of the target angle
     public static boolean isWithinTolerance(int angle, int target, int tolerance) {
@@ -18,6 +18,8 @@ public class CheckDriveStraight {
 
         }
     }
+
+    //
     public static boolean turnToCorrectSide(double angle, double target){
         if(target==180 && angle < 0) {
             System.out.println("here");
