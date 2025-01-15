@@ -8,17 +8,20 @@ public class Motor {
     private DcMotor motor;
     private boolean isReversed;
     private boolean autonomous;
+    private boolean brake;
 
-    public Motor(String name, boolean reversed, boolean autonomous){
+    public Motor(String name, boolean reversed, boolean brake, boolean autonomous){
         this.motorname = name;
         this.isReversed = reversed;
         this.autonomous = autonomous;
+        this.brake = brake;
     }
 
     //setup for when init hit in auto
     public void setupMotor(){
         if(isReversed){motor.setDirection(DcMotor.Direction.REVERSE);}
-        if(autonomous){motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);}
+        if(autonomous){setMode(DcMotor.RunMode.RUN_USING_ENCODER);}
+        if(brake){motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);}
     }
     public void setMotor(DcMotor motor) {
         this.motor = motor;
@@ -36,12 +39,13 @@ public class Motor {
     public void setPower(double power) {
         motor.setPower(power);
     }
+    //is true while the robot is moving to its target position
     public boolean isBusy(){
         return motor.isBusy();
     }
     public void stopMotor() {
         motor.setPower(0);
-        motor.setTargetPosition(motor.getCurrentPosition());
+    //    motor.setTargetPosition(motor.getCurrentPosition());
     }
 
     public DcMotor getMotor() {
