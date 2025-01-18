@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.auto;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 // a class for handling A DcMotorEx and it's simplified functions for it
@@ -15,9 +16,10 @@ public class MotorEx {
         this.motor = motor;
     }
 
-    public void move(double ticks) {
-        int position = (int) (motor.getCurrentPosition() + ticks);
+    public void move(int ticks) {
+        int position = motor.getCurrentPosition() + ticks;
         motor.setTargetPosition(position);
+        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
     public void stopMotor() {
         motor.setTargetPosition(motor.getCurrentPosition());

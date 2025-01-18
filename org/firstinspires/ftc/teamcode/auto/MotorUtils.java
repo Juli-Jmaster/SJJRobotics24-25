@@ -6,24 +6,10 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 // a utils class to load all drive motors and group motor functions
 public interface MotorUtils {
-    Motor frontRightDrive = new Motor("frontright", true, true);
-    Motor backRightDrive = new Motor("backright", false, true);
-    Motor frontLeftDrive = new Motor("frontleft", true, true);
-    Motor backLeftDrive = new Motor("backleft", false, true);
-
-    enum REVERSED{
-        RIGHT, LEFT
-    }
-
-    default void reverseMotorSide(REVERSED rev){
-        if (rev==REVERSED.RIGHT){
-            frontRightDrive.getMotor().setDirection(DcMotorSimple.Direction.REVERSE);
-            backRightDrive.getMotor().setDirection(DcMotorSimple.Direction.REVERSE);
-        } else if (rev==REVERSED.LEFT) {
-            frontLeftDrive.getMotor().setDirection(DcMotorSimple.Direction.REVERSE);
-            backLeftDrive.getMotor().setDirection(DcMotorSimple.Direction.REVERSE);
-        }
-    }
+    Motor frontRightDrive = new Motor("frontright", true, true,true);
+    Motor backRightDrive = new Motor("backright", false,true, true);
+    Motor frontLeftDrive = new Motor("frontleft", true, true,true);
+    Motor backLeftDrive = new Motor("backleft", false, true,true);
 
     //utils for using encoder
     default void stopMotors() {
