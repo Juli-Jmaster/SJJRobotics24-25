@@ -1,6 +1,7 @@
-package org.firstinspires.ftc.teamcode.libraries.MovementCurves;
+package org.firstinspires.ftc.teamcode.auto;
 
 public class MovementCurves {
+    private static double THRESHOLD = 0.15;
     //each of these curves work by taking in a value (0,1) and returning an
     //adjusted value following a curve function, returns a value (0,1);
     static final public int CONSTANT = 0;
@@ -86,7 +87,54 @@ public class MovementCurves {
         return Math.pow(Math.E, -4*x);
     }
 
+    public static double movementCurves(int movementType, double x) {
+        return movementCurves(movementType, x, 1);
+    }
+    public static double movementCurves(int movementType, double x, double mulituyer){
+        double power;
+        switch (movementType) {
 
+            case MovementCurves.CONSTANT:
+                power = 0;
+                break;
+            case MovementCurves.LINEAR:
+                power = MovementCurves.linear(x);
+                break;
+            case MovementCurves.SIN:
+                power = MovementCurves.sinCurve(x);
+                break;
+            case MovementCurves.CIRCLE:
+                power = MovementCurves.circleCurve(x);
+                break;
+            case MovementCurves.QUADRATIC:
+                //feels smooth
+                power = MovementCurves.quadraticCurve(x);
+                break;
+            case MovementCurves.ROUNDEDSQUARE:
+                power = MovementCurves.roundedSquareCurve(x);
+                break;
+            case MovementCurves.PARAMETRIC:
+                power = MovementCurves.parametricCurve(x);
+                break;
+            case MovementCurves.NORMAL:
+                power = MovementCurves.normalCurve(x);
+                break;
+            case MovementCurves.EXPEASEIN:
+                power = MovementCurves.exponentialEaseIn(x);
+                break;
+            case MovementCurves.EXPEASEOUT:
+                power = MovementCurves.exponentialEaseOut(x);
+                break;
+            default:
+                power = MovementCurves.linear(x);
+        }
+        power*=mulituyer;
+
+        if(power < THRESHOLD){
+            power=THRESHOLD;
+        }
+        return power;
+    }
 }
 
 

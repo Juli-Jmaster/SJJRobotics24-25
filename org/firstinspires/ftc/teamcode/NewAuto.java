@@ -25,14 +25,11 @@ public class NewAuto extends LinearOpMode implements DriveMainAuto, BasicRobot {
                 RevHubOrientationOnRobot.LogoFacingDirection.UP,
                 RevHubOrientationOnRobot.UsbFacingDirection.RIGHT));
 
-        elavator1.setMotor(hardwareMap.get(DcMotor.class, elavator1.motorname));
-        elavator1.setupMotor();
-        elavator1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        elavator1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        elavator2.setMotor(hardwareMap.get(DcMotor.class, elavator2.motorname));
-        elavator2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        elavator2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
+        loadAll(hardwareMap);
+        outtakeAngle.set(TRANSFER);
+        outtakeClaw.set(CLOSE);
+        intakeAngle.set(TRANSFER);
+        intakeClaw.set(OPEN);
         setModeAllDrive(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         //send telemetry data and wait for start
         DcMotorEx sideways1 = hardwareMap.get(DcMotorEx.class, "sideways");
@@ -41,12 +38,18 @@ public class NewAuto extends LinearOpMode implements DriveMainAuto, BasicRobot {
         telemetry.update();
         waitForStart();
         runtime.reset();
-        while (opModeIsActive()) {
-            telemetry.addData("cur", elavator1.getMotor().getCurrentPosition());
-            telemetry.update();
-            // elavator2.setPower(0.9);ac
-            // elavator1.setPower(0.9);
-        }
 
+        boolean forward = true;
+        boolean where = false;
+        double pos;
+        int straightFacing = 180;
+
+        movementStraight(20,1, 180, telemetry);
+    }
+
+    private void waitMe(double sec){
+        runtime.reset();
+        while (runtime.seconds() < sec) {
+        }
     }
 }

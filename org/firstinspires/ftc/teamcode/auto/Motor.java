@@ -45,7 +45,7 @@ public class Motor {
     }
     public void stopMotor() {
         motor.setPower(0);
-    //    motor.setTargetPosition(motor.getCurrentPosition());
+        motor.setTargetPosition(motor.getCurrentPosition());
     }
 
     public DcMotor getMotor() {

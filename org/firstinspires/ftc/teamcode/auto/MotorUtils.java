@@ -6,10 +6,10 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 // a utils class to load all drive motors and group motor functions
 public interface MotorUtils {
-    Motor frontRightDrive = new Motor("frontright", true, true,true);
-    Motor backRightDrive = new Motor("backright", false,true, true);
+    Motor frontRightDrive = new Motor("frontright", false, true,true);
+    Motor backRightDrive = new Motor("backright", true,true, true);
     Motor frontLeftDrive = new Motor("frontleft", true, true,true);
-    Motor backLeftDrive = new Motor("backleft", false, true,true);
+    Motor backLeftDrive = new Motor("backleft", true, true,true);
 
     //utils for using encoder
     default void stopMotors() {
@@ -41,5 +41,13 @@ public interface MotorUtils {
         frontLeftDrive.setMode(mode);
         backLeftDrive.setMode(mode);
         backRightDrive.setMode(mode);
+    }
+
+    default void powerStraightMotors(int movementCurves, double x){
+        double power = MovementCurves.movementCurves(movementCurves, x);
+        frontRightDrive.setPower(power);
+        backRightDrive.setPower(power);
+        frontLeftDrive.setPower(power);
+        backLeftDrive.setPower(power);
     }
 }
