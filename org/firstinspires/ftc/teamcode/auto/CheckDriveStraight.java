@@ -18,8 +18,18 @@ public class CheckDriveStraight {
 
         }
     }
+    public static boolean isWithinTolerance(double angle, double target, double tolerance) {
+        double lowerBound = (target - tolerance);
+        double upperBound = (target + tolerance);
 
-    //
+        if (lowerBound <= upperBound) {
+            return lowerBound <= angle && angle <= upperBound;
+        } else {
+            return lowerBound >= angle && angle >= upperBound;
+
+        }
+    }
+
     public static boolean turnToCorrectSide(double angle, double target){
         if(target==180 && angle < 0) {
             System.out.println("here");
