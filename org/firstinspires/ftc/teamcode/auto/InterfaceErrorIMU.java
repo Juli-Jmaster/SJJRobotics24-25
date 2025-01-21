@@ -54,13 +54,13 @@ public class InterfaceErrorIMU {
         if (!isWithinTolerance(cur, target, 7)){
             rotationLeft+=power;
         }
+        if (!isWithinTolerance(cur, target, 10)){
+            rotationLeft+=power;
+        }
+        if (!isWithinTolerance(cur, target, 15)){
+            rotationLeft+=power;
+        }
         if (!isWithinTolerance(cur, target, 20)){
-            rotationLeft+=power;
-        }
-        if (!isWithinTolerance(cur, target, 40)){
-            rotationLeft+=power;
-        }
-        if (!isWithinTolerance(cur, target, 80)){
             rotationLeft+=power;
         }
         // if(runtime.seconds() > time){
@@ -72,28 +72,32 @@ public class InterfaceErrorIMU {
     //get if it not facing the target with a tolerance
     public boolean notFacing(int target){
         rotationLeft=0;
-        boolean correctDriction=false;
-        int cur = (int)getYaw();
-        if (!isWithinTolerance(cur, target, 3)){
-            rotationLeft+=power;
-            correctDriction=true;
+        double currentYaw = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+
+        double angleDifference = currentYaw - target;
+
+        if (angleDifference > 180) {
+            angleDifference -= 360;
         }
-        if (!isWithinTolerance(cur, target, 7)){
-            rotationLeft+=power;
+
+        if (angleDifference < -180) {
+            angleDifference += 360;
         }
-        if (!isWithinTolerance(cur, target, 15)){
-            rotationLeft+=power;
+
+        if (angleDifference > 0) {
+            rotationLeft = MovementCurves.quadraticCurve(angleDifference/360);
         }
-        if (!isWithinTolerance(cur, target, 20)){
-            rotationLeft+=power;
+
+        if (angleDifference < 0) {
+            rotationLeft = -MovementCurves.quadraticCurve(-angleDifference/360);
         }
-        if (!isWithinTolerance(cur, target, 40)){
-            rotationLeft+=power;
-        }
-        return correctDriction;
+        if (!isWithinTolerance((int) currentYaw, target, 3)){
+            return true;
+        }else {return false;}
+
     }
     //returns the power to the left side wheel to turn to correct
     public double getRotationLeftPower(int target) {
-        return rotationLeft*(turnToCorrectSide(getYaw(), target) ? 1 : -1);
+        return rotationLeft;//*(turnToCorrectSide(getYaw(), target) ? 1 : -1);
     }
 }

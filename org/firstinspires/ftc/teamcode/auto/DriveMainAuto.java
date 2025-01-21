@@ -54,18 +54,25 @@ public interface DriveMainAuto extends MotorUtils, BasicRobot{
     //default void backwards(double inches){movementStraight(-inches);}
     //default void left(int inches){sidwaysMovement(inches);}
 
-    default void movementStraight(double inches, int flip, int straightFacing){
+
+    default void movementStraight(double inches, int flip, int straightFacing, Telemetry telemetry){
         straight.getMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         straight.move(inches);
-        int CUR = straight.getMotor().getCurrentPosition();
+//        int CUR = straight.getMotor().getCurrentPosition();
         while(!passedTarget(straight.getMotor().getCurrentPosition(), straight.getMotor().getTargetPosition())){
             imu.notFacing(straightFacing);
-            moveWithCorrection((flip*-1)*UpdatePowerTypes.decreaseAtEnd(straight.getMotor(), CUR), straightFacing);
+
+            //TODO: fix becasue need to remove STOP_RESET
+            double normalized = (double) straight.getMotor().getCurrentPosition() / straight.getMotor().getTargetPosition();
+            telemetry.addData("normalized",  normalized);
+            telemetry.addData("power", MovementCurves.movementCurves(MovementCurves.PARAMETRIC, normalized, 0.75));
+            telemetry.update();
+            moveWithCorrection((flip)*MovementCurves.movementCurves(MovementCurves.PARAMETRIC, normalized, 0.75), straightFacing);
             elevatorWhileMove();
         }
         while(passedTarget(straight.getMotor().getCurrentPosition(), straight.getMotor().getTargetPosition())){
             imu.notFacing(straightFacing);
-            moveWithCorrection(flip*0.1, straightFacing);
+            moveWithCorrection(flip*-0.15, straightFacing);
             elevatorWhileMove();
         }
         while(imu.notFacing(straightFacing)){
@@ -80,16 +87,16 @@ public interface DriveMainAuto extends MotorUtils, BasicRobot{
         sideways.move(inches);
         int CUR = sideways.getMotor().getCurrentPosition();
         while(!passedTarget(sideways.getMotor().getCurrentPosition(), sideways.getMotor().getTargetPosition())){
-            imu.notFacing(straightFacing);
-            moveWithCorrectionSideways((flip*-1)*UpdatePowerTypes.decreaseAtEnd(sideways.getMotor(), CUR), straightFacing);
+            // imu.notFacing(straightFacing);
+            moveWithCorrectionSideways((flip)*UpdatePowerTypes.decreaseAtEnd(sideways.getMotor(), CUR), straightFacing);
         }
         while(passedTarget(sideways.getMotor().getCurrentPosition(), sideways.getMotor().getTargetPosition())){
-            imu.notFacing(straightFacing);
-            moveWithCorrectionSideways(flip*0.15, straightFacing);
+            // imu.notFacing(straightFacing);
+            moveWithCorrectionSideways(flip*-0.15, straightFacing);
         }
-        while(imu.notFacing(straightFacing)){
-            moveWithCorrection(0.0, straightFacing);
-        }
+        // while(imu.notFacing(straightFacing)){
+        //     moveWithCorrection(0.0, straightFacing);
+        // }
         moveWithCorrection(0.0, straightFacing);
         stopMotors();
     }
