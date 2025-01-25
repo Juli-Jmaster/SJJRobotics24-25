@@ -31,11 +31,30 @@ public class Motor {
     }
 
     //sets its target and tell robot to move
-    public void move(int ticks) {
+    public void move(int ticks, double power) {
+        int position = motor.getCurrentPosition() + ticks;
+        motor.setTargetPosition(position);
+        setPower(power);
+        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+    //does nto set any power to start with
+    public void moveNoPower(int ticks) {
         int position = motor.getCurrentPosition() + ticks;
         motor.setTargetPosition(position);
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
+    public void moveIf(boolean reached){
+        if (reached && !brake) {
+            stopMotor();
+        }
+    }
+    public  void moveWhile(boolean reached){
+        if (reached && !brake) {
+            stopMotor();
+        }
+    }
+
+
     public void setPower(double power) {
         motor.setPower(power);
     }
@@ -45,7 +64,6 @@ public class Motor {
     }
     public void stopMotor() {
         motor.setPower(0);
-    //    motor.setTargetPosition(motor.getCurrentPosition());
     }
 
     public DcMotor getMotor() {

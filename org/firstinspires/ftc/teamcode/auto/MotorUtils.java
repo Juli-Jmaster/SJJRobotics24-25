@@ -2,39 +2,49 @@ package org.firstinspires.ftc.teamcode.auto;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 // a utils class to load all drive motors and group motor functions
-public interface MotorUtils {
+public interface MotorUtils extends RobotConstants {
 
-    Motor frontRightDrive = new Motor("frontright", false, true,true);
-    Motor backRightDrive = new Motor("backright", true,true, true);
-    Motor frontLeftDrive = new Motor("frontleft", true, true,true);
-    Motor backLeftDrive = new Motor("backleft", true, true,true);
+    Motor frontRightDrive = new Motor("frontright", false, driveMotorBrake, drivemotorEncoders);
+    Motor backRightDrive = new Motor("backright", true, driveMotorBrake, drivemotorEncoders);
+    Motor frontLeftDrive = new Motor("frontleft", true, driveMotorBrake, drivemotorEncoders);
+    Motor backLeftDrive = new Motor("backleft", true, driveMotorBrake, drivemotorEncoders);
 
     //utils for using encoder
-    default void stopMotors() {
+    default void stopDriveMotors() {
         frontRightDrive.stopMotor();
         backRightDrive.stopMotor();
         frontLeftDrive.stopMotor();
         backLeftDrive.stopMotor();
     }
 
-    default void updateMotors(DcMotorEx motorEx, int CUR){
-        frontRightDrive.setPower(UpdatePowerTypes.startEndUpdatePower(motorEx, CUR));
-        backRightDrive.setPower(UpdatePowerTypes.startEndUpdatePower(motorEx, CUR));
-        frontLeftDrive.setPower(UpdatePowerTypes.startEndUpdatePower(motorEx, CUR));
-        backLeftDrive.setPower(UpdatePowerTypes.startEndUpdatePower(motorEx, CUR));
-    }
-    default void updateMotorsSideways(DcMotorEx motorEx, int CUR){
-        frontRightDrive.setPower(-UpdatePowerTypes.startEndUpdatePower(motorEx, CUR));
-        backRightDrive.setPower(UpdatePowerTypes.startEndUpdatePower(motorEx, CUR));
-        frontLeftDrive.setPower(UpdatePowerTypes.startEndUpdatePower(motorEx, CUR));
-        backLeftDrive.setPower(-UpdatePowerTypes.startEndUpdatePower(motorEx, CUR));
+    //used for stopping motors if or while
+    //should never use while
+    default void driveStopIf(boolean reached) {
+        if (reached && !driveMotorBrake) {
+            stopDriveMotors();
+        }
     }
 
-    default void cleanupMotors() {
-        setModeAllDrive(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    default void driveStopWhile(boolean reached) {
+        while (reached && !driveMotorBrake) {
+            stopDriveMotors();
+        }
+    }
+
+    default void powerStraightDriveMotors(double x, double rl) {
+        frontRightDrive.setPower(MovementCurves.movementCurves(defaultDriveMovementCurve, x) - rl);
+        backRightDrive.setPower(MovementCurves.movementCurves(defaultDriveMovementCurve, x) - rl);
+        frontLeftDrive.setPower(MovementCurves.movementCurves(defaultDriveMovementCurve, x) + rl);
+        backLeftDrive.setPower(MovementCurves.movementCurves(defaultDriveMovementCurve, x) + rl);
+    }
+
+    default void powerSidewaysDriveMotors(double x, double rl) {
+        frontRightDrive.setPower(-MovementCurves.movementCurves(defaultDriveMovementCurve, x) - rl);
+        backRightDrive.setPower(MovementCurves.movementCurves(defaultDriveMovementCurve, x) - rl);
+        frontLeftDrive.setPower(MovementCurves.movementCurves(defaultDriveMovementCurve, x) + rl);
+        backLeftDrive.setPower(-MovementCurves.movementCurves(defaultDriveMovementCurve, x) + rl);
     }
 
     default void setModeAllDrive(DcMotor.RunMode mode) {
@@ -44,11 +54,22 @@ public interface MotorUtils {
         backRightDrive.setMode(mode);
     }
 
-    default void powerStraightMotors(int movementCurves, double x){
-        double power = MovementCurves.movementCurves(movementCurves, x);
-        frontRightDrive.setPower(power);
-        backRightDrive.setPower(power);
-        frontLeftDrive.setPower(power);
-        backLeftDrive.setPower(power);
+    //reset the drive motors encoders
+    default void cleanupMotors() {
+        setModeAllDrive(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+
+    default void setEncoderDriveTarget(int MOVE, int target) {
+        if (MOVE == sideways) {
+            frontRightDrive.moveNoPower(-target);
+            frontLeftDrive.moveNoPower(target);
+            backRightDrive.moveNoPower(target);
+            backLeftDrive.moveNoPower(-target);
+        } else {
+            frontRightDrive.moveNoPower(target);
+            frontLeftDrive.moveNoPower(target);
+            backLeftDrive.moveNoPower(target);
+            backRightDrive.moveNoPower(target);
+        }
     }
 }
