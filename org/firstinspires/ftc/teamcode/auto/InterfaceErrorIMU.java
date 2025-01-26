@@ -100,4 +100,46 @@ public class InterfaceErrorIMU {
     public double getRotationLeftPower(int target) {
         return rotationLeft;//*(turnToCorrectSide(getYaw(), target) ? 1 : -1);
     }
+
+    public void face(double direction) {
+
+        //forward 0
+        //right -90, 270
+        //backwards 180, -180
+        //left 90
+
+        double currentYaw;
+        double angleDifference = 180;
+        double rX = 1;
+
+        if (direction > 180) {
+            direction -= 360;
+        }
+        currentYaw = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+
+        angleDifference = currentYaw - direction;
+
+        if (angleDifference > 180) {
+            angleDifference -= 360;
+        }
+
+        if (angleDifference < -180) {
+            angleDifference += 360;
+        }
+
+        if (angleDifference > 0) {
+            rX = MovementCurves.quadraticCurve(angleDifference / 360);
+        }
+
+        if (angleDifference < 0) {
+            rX = -MovementCurves.quadraticCurve(-angleDifference / 360);
+        }
+        if (rX > 0 && rX < .1) {
+            rX = .1;
+        }
+        if (rX < 0 && rX > -.1) {
+            rX = -.1;
+        }
+    }
+    //done
 }

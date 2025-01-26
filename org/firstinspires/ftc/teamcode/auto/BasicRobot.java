@@ -25,7 +25,12 @@ public interface BasicRobot {
     int CLOSE = 1;
     int SLIGHTCLOSE = 2;
     FixedPositionServo outtakeClaw = new FixedPositionServo("outtakeClaw", new double[]{0.2, 0.34});
-    FixedPositionServo intakeClaw = new FixedPositionServo("intakeClaw", new double[]{0.0D, 0.052, 0.46});
+    FixedPositionServo intakeClaw = new FixedPositionServo("intakeClaw", new double[]{0.0D, 0.1, 0.7});
+    int CEN= 0 ;
+    int LEFT = 1;
+    int RIGHT = 2;
+    FixedPositionServo intakeRotate = new FixedPositionServo("intakeRotate", new double[]{0.5,0,1});
+
 
     //need to fix now that motor have brake enabled; all needs to done in motor class thou
     Motor elavator1 = new Motor("elavator1", true, true,false);
@@ -49,6 +54,8 @@ public interface BasicRobot {
         intakeSlide2.setServo(hardwareMap.get(Servo.class, intakeSlide2.servoName));
         outtakeClaw.setServo(hardwareMap.get(Servo.class, outtakeClaw.servoName));
         intakeClaw.setServo(hardwareMap.get(Servo.class, intakeClaw.servoName));
+        intakeRotate.setServo(hardwareMap.get(Servo.class, intakeRotate.servoName));
+
     }
 
     default void elevator(int ticks){
