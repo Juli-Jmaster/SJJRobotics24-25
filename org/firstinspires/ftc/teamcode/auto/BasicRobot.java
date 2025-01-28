@@ -12,8 +12,8 @@ public interface BasicRobot {
     int TRANSFER = 0;
     int GRAB = 1;
     int PLACE = 1;
-    FixedPositionServo outtakeAngle = new FixedPositionServo("outtakeAngle", new double[]{0.441+.028, 0.589+.03});
-    FixedPositionServo intakeAngle = new FixedPositionServo("intakeAngle", new double[]{0.75, 0.06});
+    FixedPositionServo outtakeAngle = new FixedPositionServo("outtakeAngle", new double[]{0.441+.033, 0.589+.03});
+    FixedPositionServo intakeAngle = new FixedPositionServo("intakeAngle", new double[]{0.75, 0.03});
 
     //first position is out and second is all the way in
     int SLIDEOUT = 0;
@@ -29,7 +29,7 @@ public interface BasicRobot {
     int CEN= 0 ;
     int LEFT = 1;
     int RIGHT = 2;
-    FixedPositionServo intakeRotate = new FixedPositionServo("intakeRotate", new double[]{0.5,0,1});
+    AjustableServo intakeRotate = new AjustableServo("intakeRotate", 0.49, 0.427, 0.553, 0.00025);
 
 
     //need to fix now that motor have brake enabled; all needs to done in motor class thou
@@ -59,8 +59,8 @@ public interface BasicRobot {
     }
 
     default void elevator(int ticks){
-        elavator1.move(ticks);
-        elavator2.move(ticks);
+        elavator1.moveNoPower(ticks);
+        elavator2.moveNoPower(ticks);
         while(elavator1.getMotor().isBusy()){
             elavator2.setPower(0.7);
             elavator1.setPower(0.7);
