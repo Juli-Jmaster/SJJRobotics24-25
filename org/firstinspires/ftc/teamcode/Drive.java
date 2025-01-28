@@ -10,9 +10,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.auto.BasicRobot;
+import org.firstinspires.ftc.teamcode.auto.CheckDriveStraight;
 import org.firstinspires.ftc.teamcode.auto.InterfaceErrorIMU;
 
 
+import static org.firstinspires.ftc.teamcode.auto.CheckDriveStraight.isWithinTolerance;
 @TeleOp
 public class Drive extends LinearOpMode implements BasicRobot {
 
@@ -88,6 +90,7 @@ public class Drive extends LinearOpMode implements BasicRobot {
         intakeSlide2.setServo(hardwareMap.get(Servo.class, intakeSlide2.servoName));
         outtakeClaw.setServo(hardwareMap.get(Servo.class, outtakeClaw.servoName));
         intakeClaw.setServo(hardwareMap.get(Servo.class, intakeClaw.servoName));
+        intakeRotate.setServo(hardwareMap.get(Servo.class, intakeRotate.servoName));
 //        Servo outtakeClaw = hardwareMap.get(Servo.class, "outtakeClaw");
 //        Servo intakeClaw = hardwareMap.get(Servo.class, "intakeClaw");
 
@@ -102,6 +105,7 @@ public class Drive extends LinearOpMode implements BasicRobot {
         outtakeAngle.set(TRANSFER);
         intakeClaw.set(OPEN);//intakeClawPosition.open.position);
         outtakeClaw.set(CLOSE);//outtakeClawPosition.close.position);
+        intakeRotate.startServo();
         claws=false;
 
 
@@ -158,10 +162,10 @@ public class Drive extends LinearOpMode implements BasicRobot {
                 apressed = false;
             }
             if (gamepad2.b && bpressed == true) {
-                if (intakeAngle.get(GRAB) + 0.1 > intakeAngle.getPos() && intakeAngle.get(GRAB) - 0.1 < intakeAngle.getPos()) {
+                if (isWithinTolerance(intakeAngle.getPos(), intakeAngle.get(GRAB), 0.1)) {
                     intakeAngle.set(TRANSFER);
 
-                } else if (intakeAngle.get(TRANSFER) + 0.1 > intakeAngle.getPos() && intakeAngle.get(TRANSFER) - 0.1 < intakeAngle.getPos()) {
+                } else if (isWithinTolerance(intakeAngle.getPos(), intakeAngle.get(TRANSFER), 0.1)) {
                     intakeAngle.set(GRAB);
                 }
                 bpressed = false;
@@ -235,6 +239,15 @@ public class Drive extends LinearOpMode implements BasicRobot {
             elavator2.setPower(elavatorPower);
             elavator1.setPower(elavatorPower);
             telemetry.update();
+            if(gamepad2.right_bumper){
+                intakeRotate.increase();
+            }
+            if(gamepad2.left_bumper){
+                intakeRotate.decrease();
+            }
+            if(gamepad2.x){
+                intakeRotate.startServo();
+            }
         }
     }
     private void waitMe(double sec, ElapsedTime runtime){

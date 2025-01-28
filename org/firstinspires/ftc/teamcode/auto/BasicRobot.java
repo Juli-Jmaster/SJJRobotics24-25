@@ -12,8 +12,8 @@ public interface BasicRobot {
     int TRANSFER = 0;
     int GRAB = 1;
     int PLACE = 1;
-    FixedPositionServo outtakeAngle = new FixedPositionServo("outtakeAngle", new double[]{0.441+.028, 0.589+.03});
-    FixedPositionServo intakeAngle = new FixedPositionServo("intakeAngle", new double[]{0.75, 0.06});
+    FixedPositionServo outtakeAngle = new FixedPositionServo("outtakeAngle", new double[]{0.441+.033, 0.589+.03});
+    FixedPositionServo intakeAngle = new FixedPositionServo("intakeAngle", new double[]{0.75, 0.03});
 
     //first position is out and second is all the way in
     int SLIDEOUT = 0;
@@ -25,7 +25,12 @@ public interface BasicRobot {
     int CLOSE = 1;
     int SLIGHTCLOSE = 2;
     FixedPositionServo outtakeClaw = new FixedPositionServo("outtakeClaw", new double[]{0.2, 0.34});
-    FixedPositionServo intakeClaw = new FixedPositionServo("intakeClaw", new double[]{0.0D, 0.052, 0.46});
+    FixedPositionServo intakeClaw = new FixedPositionServo("intakeClaw", new double[]{0.0D, 0.1, 0.7});
+    int CEN= 0 ;
+    int LEFT = 1;
+    int RIGHT = 2;
+    AjustableServo intakeRotate = new AjustableServo("intakeRotate", 0.49, 0.427, 0.553, 0.00025);
+
 
     //need to fix now that motor have brake enabled; all needs to done in motor class thou
     Motor elavator1 = new Motor("elavator1", true, true,false);
@@ -49,6 +54,8 @@ public interface BasicRobot {
         intakeSlide2.setServo(hardwareMap.get(Servo.class, intakeSlide2.servoName));
         outtakeClaw.setServo(hardwareMap.get(Servo.class, outtakeClaw.servoName));
         intakeClaw.setServo(hardwareMap.get(Servo.class, intakeClaw.servoName));
+        intakeRotate.setServo(hardwareMap.get(Servo.class, intakeRotate.servoName));
+
     }
 
     default void elevator(int ticks){
