@@ -11,10 +11,10 @@ public interface RobotConstants {
     //if all motor have encoders cables attached and want to use those instead
     boolean drivemotorEncoders = false;
 
-    int defaultDriveMovementCurve = MovementCurves.ROUNDEDSQUARE; //TODO: find correct one
+    int defaultDriveMovementCurve = MovementCurves.CIRCLE; //TODO: find correct one
     double defaultDriveMultipier = 1;
 
-    int defaultTurnMovementCurve = MovementCurves.ROUNDEDSQUARE; //TODO: find correct one
+    int defaultTurnMovementCurve = MovementCurves.CIRCLE; //TODO: find correct one
     double defaultTurnMultipier = 1;
 
     // do not modify;used for when running
@@ -27,6 +27,4 @@ public interface RobotConstants {
     default void whileDrive(int MOVE){
 
     }
-
-
 }
