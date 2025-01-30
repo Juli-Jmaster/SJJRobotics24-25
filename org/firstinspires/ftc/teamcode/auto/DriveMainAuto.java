@@ -14,8 +14,8 @@ import static org.firstinspires.ftc.teamcode.auto.CheckDriveStraight.passedTarge
 public interface DriveMainAuto extends MotorUtils, BasicRobot{
 
     //use of odometry motor and IMU
-    OdometryMotor straight = new OdometryMotor("straight", OdometryMotor.WHEELTYPE.MM, 48, OdometryMotor.TYPE.TICKPERREV, 2000 );
-    OdometryMotor sideways = new OdometryMotor("sideways", OdometryMotor.WHEELTYPE.MM, 48, OdometryMotor.TYPE.TICKPERREV, 2000 );
+    OdometryMotor straight = new OdometryMotor("straight", diameterLengthType, diameterLength, ticksPerType, ticksPerTypeNumber);
+    OdometryMotor sideways = new OdometryMotor("sideways", diameterLengthType, diameterLength, ticksPerType, ticksPerTypeNumber);
     InterfaceErrorIMU imu = new InterfaceErrorIMU("imu");
     double turnMaxSpeed = 0.5;
     ElapsedTime runtime = new ElapsedTime();
