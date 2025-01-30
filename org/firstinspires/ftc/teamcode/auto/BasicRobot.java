@@ -31,6 +31,7 @@ public interface BasicRobot {
     int RIGHT = 2;
     AjustableServo intakeRotate = new AjustableServo("intakeRotate", 0.49, 0.427, 0.553, 0.00025);
 
+    FixedPositionServo intakeAngle2 = new FixedPositionServo("intakeAngle2", new double[]{0.0D, 1.0D});
 
     //need to fix now that motor have brake enabled; all needs to done in motor class thou
     Motor elavator1 = new Motor("elavator1", true, true,false);
@@ -55,6 +56,9 @@ public interface BasicRobot {
         outtakeClaw.setServo(hardwareMap.get(Servo.class, outtakeClaw.servoName));
         intakeClaw.setServo(hardwareMap.get(Servo.class, intakeClaw.servoName));
         intakeRotate.setServo(hardwareMap.get(Servo.class, intakeRotate.servoName));
+
+        intakeAngle2.setServo(hardwareMap.get(Servo.class, intakeAngle2.servoName));
+        intakeAngle2.set(0);
 
     }
 

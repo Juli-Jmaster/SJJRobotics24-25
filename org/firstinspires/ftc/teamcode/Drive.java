@@ -91,6 +91,8 @@ public class Drive extends LinearOpMode implements BasicRobot {
         outtakeClaw.setServo(hardwareMap.get(Servo.class, outtakeClaw.servoName));
         intakeClaw.setServo(hardwareMap.get(Servo.class, intakeClaw.servoName));
         intakeRotate.setServo(hardwareMap.get(Servo.class, intakeRotate.servoName));
+        intakeAngle2.setServo(hardwareMap.get(Servo.class, intakeAngle2.servoName));
+        intakeAngle2.set(0);
 //        Servo outtakeClaw = hardwareMap.get(Servo.class, "outtakeClaw");
 //        Servo intakeClaw = hardwareMap.get(Servo.class, "intakeClaw");
 
