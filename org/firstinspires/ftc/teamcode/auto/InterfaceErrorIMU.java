@@ -141,4 +141,8 @@ public class InterfaceErrorIMU {
         }
     }
     //done
+
+    public boolean gotToTarget(int target) {
+        return Utils.isWithinTolerance(getYaw(), target, 0.15);
+    }
 }
