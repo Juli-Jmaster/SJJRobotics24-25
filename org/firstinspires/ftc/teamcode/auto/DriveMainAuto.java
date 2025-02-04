@@ -60,7 +60,7 @@ public interface DriveMainAuto extends MotorUtils, BasicRobot{
         straight.move(inches);
 //        int CUR = straight.getMotor().getCurrentPosition();
         while(!passedTarget(straight.getMotor().getCurrentPosition(), straight.getMotor().getTargetPosition())){
-            imu.notFacing(straightFacing);
+            imu.face(straightFacing);
 
             //TODO: fix becasue need to remove STOP_RESET
             double normalized = (double) straight.getMotor().getCurrentPosition() / straight.getMotor().getTargetPosition();
@@ -71,14 +71,14 @@ public interface DriveMainAuto extends MotorUtils, BasicRobot{
             elevatorWhileMove();
         }
         while(passedTarget(straight.getMotor().getCurrentPosition(), straight.getMotor().getTargetPosition())){
-            imu.notFacing(straightFacing);
+            imu.face(straightFacing);
             moveWithCorrection(flip*-0.15, straightFacing);
             elevatorWhileMove();
         }
-        while(imu.notFacing(straightFacing)){
-            moveWithCorrection(0.0, straightFacing);
-            elevatorWhileMove();
-        }
+//        while(imu.notFacing(straightFacing)){
+//            moveWithCorrection(0.0, straightFacing);
+//            elevatorWhileMove();
+//        }
         stopDriveMotors();
     }
 
