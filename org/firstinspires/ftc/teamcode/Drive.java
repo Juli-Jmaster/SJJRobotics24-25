@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -8,9 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.auto.BasicRobot;
-import org.firstinspires.ftc.teamcode.auto.CheckDriveStraight;
 import org.firstinspires.ftc.teamcode.auto.InterfaceErrorIMU;
 
 
@@ -23,6 +22,9 @@ public class Drive extends LinearOpMode implements BasicRobot {
     private DcMotor backrightDrive = null;
     private DcMotor frontleftDrive = null;
     private DcMotor backleftDrive = null;
+
+    private RevColorSensorV3 c1 = null;
+    private RevColorSensorV3 c2 = null;
 
     // variables for movement of robot;
     private InterfaceErrorIMU imu = new InterfaceErrorIMU("imu");
@@ -97,6 +99,10 @@ public class Drive extends LinearOpMode implements BasicRobot {
 //        Servo intakeClaw = hardwareMap.get(Servo.class, "intakeClaw");
 
 
+        c1 = hardwareMap.get(RevColorSensorV3.class, "c1");
+        c1.enableLed(false);
+        c2 = hardwareMap.get(RevColorSensorV3.class, "c2");
+        c2.enableLed(false);
         //reverse correct motor so power of 1 makes robot go forward
         frontrightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -140,7 +146,7 @@ public class Drive extends LinearOpMode implements BasicRobot {
 
             telemetry.addData("Servo Position 2", (double) intakeSlide2.getPos());
             telemetry.addData("Servo Position 1", (double) intakeSlide1.getPos());
-            telemetry.addData("preref", elavator2.getMotor().getPower());
+            telemetry.addData("preref", c1.gre());
             //pressed
             telemetry.addData("bpressed", bpressed);
             telemetry.addData("apressed", apressed);
@@ -164,11 +170,21 @@ public class Drive extends LinearOpMode implements BasicRobot {
                 apressed = false;
             }
             if (gamepad2.b && bpressed == true) {
-                if (isWithinTolerance(intakeAngle.getPos(), intakeAngle.get(GRAB), 0.1)) {
+                if (isWithinTolerance(intakeAngle.getPos(), intakeAngle.get(GRAB), 0.001)) {
+                    intakeRotate.startServo();
                     intakeAngle.set(TRANSFER);
-
-                } else if (isWithinTolerance(intakeAngle.getPos(), intakeAngle.get(TRANSFER), 0.1)) {
+                    intakeAngle2.set(TRANSFER);
+                } else if (isWithinTolerance(intakeAngle.getPos(), intakeAngle.get(TRANSFER), 0.001)) {
+                    intakeAngle.set(GRAB_SEARCH);
+                    intakeAngle2.set(GRAB_SEARCH);
+                    c1.enableLed(true);
+                    c2.enableLed(true);
+                }
+                else if (isWithinTolerance(intakeAngle.getPos(), intakeAngle.get(GRAB_SEARCH),0.001)){
                     intakeAngle.set(GRAB);
+                    intakeAngle2.set(GRAB);
+                    c1.enableLed(false);
+                    c2.enableLed(false);
                 }
                 bpressed = false;
             }
@@ -198,7 +214,6 @@ public class Drive extends LinearOpMode implements BasicRobot {
                 if(abort){break;}
                 intakeClaw.set(OPEN);//intakeClawPosition.open.position);
                 claws=false;
-
             }
             if (gamepad2.right_trigger > 0.2) {
 //                intakeSlide1.setPosition(0.35/*-0.15*/);

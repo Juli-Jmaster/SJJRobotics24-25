@@ -10,10 +10,11 @@ public interface BasicRobot {
 
     // first value is the transfer position and other is outside position
     int TRANSFER = 0;
-    int GRAB = 1;
+    int GRAB_SEARCH = 1;
+    int GRAB = 2;
     int PLACE = 1;
-    FixedPositionServo outtakeAngle = new FixedPositionServo("outtakeAngle", new double[]{0.441+.033, 0.589+.03});
-    FixedPositionServo intakeAngle = new FixedPositionServo("intakeAngle", new double[]{0.75, 0.03});
+    FixedPositionServo outtakeAngle = new FixedPositionServo("outtakeAngle", new double[]{0.441+.04, 0.589+.03});
+    FixedPositionServo intakeAngle = new FixedPositionServo("intakeAngle", new double[]{0.75, 0.06, 0.0});
 
     //first position is out and second is all the way in
     int SLIDEOUT = 0;
@@ -25,13 +26,13 @@ public interface BasicRobot {
     int CLOSE = 1;
     int SLIGHTCLOSE = 2;
     FixedPositionServo outtakeClaw = new FixedPositionServo("outtakeClaw", new double[]{0.2, 0.34});
-    FixedPositionServo intakeClaw = new FixedPositionServo("intakeClaw", new double[]{0.0D, 0.1, 0.7});
+    FixedPositionServo intakeClaw = new FixedPositionServo("intakeClaw", new double[]{0.0D, 0.12, 0.7});
     int CEN= 0 ;
     int LEFT = 1;
     int RIGHT = 2;
     AjustableServo intakeRotate = new AjustableServo("intakeRotate", 0.49, 0.427, 0.553, 0.00025);
 
-    FixedPositionServo intakeAngle2 = new FixedPositionServo("intakeAngle2", new double[]{0.0D, 1.0D});
+    FixedPositionServo intakeAngle2 = new FixedPositionServo("intakeAngle2", new double[]{0.0D, 0.67D, 0.75});
 
     //need to fix now that motor have brake enabled; all needs to done in motor class thou
     Motor elavator1 = new Motor("elavator1", true, true,false);

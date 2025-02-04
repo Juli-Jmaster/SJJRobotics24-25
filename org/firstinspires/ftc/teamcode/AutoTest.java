@@ -5,12 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.auto.BasicRobot;
 import org.firstinspires.ftc.teamcode.auto.DriveMainAuto;
-import org.firstinspires.ftc.teamcode.auto.UpdatePowerTypes;
-
-import static org.firstinspires.ftc.teamcode.auto.CheckDriveStraight.passedTarget;
 
 @Autonomous
 public class AutoTest extends LinearOpMode implements DriveMainAuto, BasicRobot {
@@ -66,7 +62,7 @@ public class AutoTest extends LinearOpMode implements DriveMainAuto, BasicRobot 
         turnTo(straightFacing);
 
         sidwaysMovement(4.5, 1, straightFacing);
-        intakeAngle.set(GRAB);
+        intakeAngle.set(GRAB_SEARCH);
         outtakeAngle.set(PLACE);
 
         straightFacing = straightFacing + 7;
@@ -102,7 +98,7 @@ public class AutoTest extends LinearOpMode implements DriveMainAuto, BasicRobot 
         turnTo(straightFacing);
 
         sidwaysMovement(-10, -1, straightFacing);
-        intakeAngle.set(GRAB);
+        intakeAngle.set(GRAB_SEARCH);
         outtakeAngle.set(PLACE);
 
         //differant from above
