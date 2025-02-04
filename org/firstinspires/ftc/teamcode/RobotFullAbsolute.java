@@ -339,14 +339,13 @@ public class RobotFullAbsolute extends LinearOpMode {
                     }
 
                     if (timerSeconds + .5 < currentTimeSeconds && (frontSensor.red() > COLORTHRESHOLD && backSensor.red() > COLORTHRESHOLD
-                            || frontSensor.green() > COLORTHRESHOLD && backSensor.green() > COLORTHRESHOLD) || gamepad2.square) {
+                            || frontSensor.green() > COLORTHRESHOLD && backSensor.green() > COLORTHRESHOLD) || gamepad2.right_bumper) {
                         currentMode = PASSMODE;
                         timer = currentTime;
                         timerSeconds = currentTimeSeconds;
                     } else if (timerSeconds + .5 < currentTimeSeconds) {
                         currentMode = SEARCHMODE;
                     }
-
 //                    elevator1.setTargetPosition(LOW_ELEVATOR_POSITION);
 //                    elevator2.setTargetPosition(LOW_ELEVATOR_POSITION);
 //                    elevator1.setPower(1);
