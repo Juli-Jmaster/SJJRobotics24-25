@@ -4,8 +4,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-import static org.firstinspires.ftc.teamcode.auto.CheckDriveStraight.isWithinTolerance;
-import static org.firstinspires.ftc.teamcode.auto.CheckDriveStraight.turnToCorrectSide;
+import static org.firstinspires.ftc.teamcode.auto.Utils.isWithinTolerance;
 
 // class for handling the IMU and its calculations
 //because of how the robot gets its data in -180 to 180

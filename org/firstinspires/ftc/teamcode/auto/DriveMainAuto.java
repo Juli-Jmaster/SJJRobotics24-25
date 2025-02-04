@@ -9,7 +9,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 import static java.lang.Thread.sleep;
-import static org.firstinspires.ftc.teamcode.auto.CheckDriveStraight.passedTarget;
+import static org.firstinspires.ftc.teamcode.auto.Utils.passedTarget;
 
 public interface DriveMainAuto extends MotorUtils, BasicRobot{
 
@@ -49,8 +49,8 @@ public interface DriveMainAuto extends MotorUtils, BasicRobot{
     }
 
     //simplified movement for the motors
-    default void forward(double inches, int straightHeading){movementStraight(inches, 1, straightHeading);}
-    default void backward(double inches, int straightHeading){movementStraight(-inches, -1, straightHeading);}
+   // default void forward(double inches, int straightHeading){movementStraight(inches, 1, straightHeading);}
+   // default void backward(double inches, int straightHeading){movementStraight(-inches, -1, straightHeading);}
     //default void backwards(double inches){movementStraight(-inches);}
     //default void left(int inches){sidwaysMovement(inches);}
 
@@ -79,7 +79,7 @@ public interface DriveMainAuto extends MotorUtils, BasicRobot{
             moveWithCorrection(0.0, straightFacing);
             elevatorWhileMove();
         }
-        stopMotors();
+        stopDriveMotors();
     }
 
     default void sidwaysMovement(double inches, int flip, int straightFacing){
@@ -98,7 +98,7 @@ public interface DriveMainAuto extends MotorUtils, BasicRobot{
         //     moveWithCorrection(0.0, straightFacing);
         // }
         moveWithCorrection(0.0, straightFacing);
-        stopMotors();
+        stopDriveMotors();
     }
 
     default void startUsingMotors(){
@@ -127,7 +127,7 @@ public interface DriveMainAuto extends MotorUtils, BasicRobot{
             moveWithCorrection(0.0, degree);
             elevatorWhileMove();
         }
-        stopMotors();
+        stopDriveMotors();
     }
 
     default void turnLeft(int degrees, boolean opActive, Telemetry telemetry) throws InterruptedException{
@@ -171,7 +171,7 @@ public interface DriveMainAuto extends MotorUtils, BasicRobot{
             telemetry.update();
         }
         //stop the motors
-        stopMotors();
+        stopDriveMotors();
 
         //set motors to use encoders again
         setModeAllDrive(DcMotor.RunMode.RUN_USING_ENCODER);

@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.auto.BasicRobot;
 import org.firstinspires.ftc.teamcode.auto.DriveMainAuto;
 import org.firstinspires.ftc.teamcode.auto.UpdatePowerTypes;
 
-import static org.firstinspires.ftc.teamcode.auto.CheckDriveStraight.passedTarget;
+import static org.firstinspires.ftc.teamcode.auto.Utils.passedTarget;
 
 @Autonomous
 public class ReTestFuncs extends LinearOpMode implements DriveMainAuto, BasicRobot {
